@@ -1,4 +1,4 @@
-# eInvoice XSD2C# Generation
+# eInvoice XSD to C# Generation
 How to generate file eInvoice.cs from eInvoice.xsd
 
 **Generation Process**
