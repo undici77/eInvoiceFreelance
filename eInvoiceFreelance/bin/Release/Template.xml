@@ -6,7 +6,7 @@
         <IdPaese>IT</IdPaese>
         <IdCodice></IdCodice>
       </IdTrasmittente>
-      <ProgressivoInvio>2</ProgressivoInvio>
+      <ProgressivoInvio></ProgressivoInvio>
       <FormatoTrasmissione>FPR12</FormatoTrasmissione>
       <CodiceDestinatario></CodiceDestinatario>
     </DatiTrasmissione>
