@@ -48,6 +48,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DataGridViewEx.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="eInvoice.cs" />
     <Compile Include="IniFile.cs" />
     <Compile Include="MainForm.cs">
