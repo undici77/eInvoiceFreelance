@@ -56,7 +56,7 @@
       <DatiGeneraliDocumento>
         <TipoDocumento>TD01</TipoDocumento>
         <Divisa>EUR</Divisa>
-        <Data>2019-01-06</Data>
+        <Data>2000-01-01</Data>
         <Numero>1</Numero>
         <DatiRitenuta>
           <TipoRitenuta>RT01</TipoRitenuta>
@@ -76,5 +76,20 @@
         <Imposta>0</Imposta>
       </DatiRiepilogo>
     </DatiBeniServizi>
+    <DatiPagamento>
+      <CondizioniPagamento>TP02</CondizioniPagamento>
+      <DettaglioPagamento>
+        <ModalitaPagamento>MP05</ModalitaPagamento>
+        <ImportoPagamento>0</ImportoPagamento>
+        <DataRiferimentoTerminiPagamento>2000-01-01</DataRiferimentoTerminiPagamento>
+        <DataScadenzaPagamento>2000-01-01</DataScadenzaPagamento>
+        <Beneficiario></Beneficiario>
+        <IstitutoFinanziario></IstitutoFinanziario>
+        <IBAN></IBAN>
+        <ABI></ABI>
+        <CAB></CAB>
+        <BIC></BIC>
+      </DettaglioPagamento>
+    </DatiPagamento>
   </FatturaElettronicaBody>
 </ns2:FatturaElettronica>

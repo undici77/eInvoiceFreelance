@@ -183,6 +183,7 @@
 			this.DonatePictureBox.Location = new System.Drawing.Point(724, 277);
 			this.DonatePictureBox.Name = "DonatePictureBox";
 			this.DonatePictureBox.Size = new System.Drawing.Size(348, 172);
+			this.DonatePictureBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
 			this.DonatePictureBox.TabIndex = 3;
 			this.DonatePictureBox.TabStop = false;
 			this.DonatePictureBox.Click += new System.EventHandler(this.DonatePictureBox_Click);
@@ -237,11 +238,12 @@
 			this.InvoiceGridView.ShowCellToolTips = false;
 			this.InvoiceGridView.ShowEditingIcon = false;
 			this.InvoiceGridView.ShowRowErrors = false;
-			this.InvoiceGridView.Size = new System.Drawing.Size(1060, 240);
+			this.InvoiceGridView.Size = new System.Drawing.Size(1059, 240);
 			this.InvoiceGridView.TabIndex = 0;
 			this.InvoiceGridView.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.InvoiceGridView_CellDoubleClick);
 			this.InvoiceGridView.CellEndEdit += new System.Windows.Forms.DataGridViewCellEventHandler(this.InvoiceGridView_CellEndEdit);
 			this.InvoiceGridView.CellFormatting += new System.Windows.Forms.DataGridViewCellFormattingEventHandler(this.InvoiceGridView_CellFormatting);
+			this.InvoiceGridView.CellMouseClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.InvoiceGridView_CellMouseClick);
 			this.InvoiceGridView.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.InvoiceGridView_CellValueChanged);
 			this.InvoiceGridView.CurrentCellDirtyStateChanged += new System.EventHandler(this.InvoiceGridView_CurrentCellDirtyStateChanged);
 			this.InvoiceGridView.EditingControlShowing += new System.Windows.Forms.DataGridViewEditingControlShowingEventHandler(this.InvoiceGridView_EditingControlShowing);
@@ -307,6 +309,7 @@
 			this.InvoiceVat.HeaderText = "IVA";
 			this.InvoiceVat.MinimumWidth = 60;
 			this.InvoiceVat.Name = "InvoiceVat";
+			this.InvoiceVat.ReadOnly = true;
 			// 
 			// MainForm
 			// 
@@ -317,6 +320,7 @@
 			this.Controls.Add(this.SummariesGridView);
 			this.Controls.Add(this.InvoiceGridView);
 			this.Controls.Add(this.StripMenu);
+			this.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.MainMenuStrip = this.StripMenu;
 			this.MinimumSize = new System.Drawing.Size(1100, 500);

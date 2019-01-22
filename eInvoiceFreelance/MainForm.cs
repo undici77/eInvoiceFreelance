@@ -12,6 +12,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml.Serialization;
+using eInvoiceFreelance.Serializer;
 
 namespace eInvoiceFreelance
 {
@@ -24,7 +25,6 @@ namespace eInvoiceFreelance
 			public decimal unit_price;
 			public decimal total_price;
 			public bool    reimbursement;
-			public decimal vat;
 		}
 
 		private enum INVOICE_GRID_VIEW_COLUMN_ID
@@ -65,13 +65,17 @@ namespace eInvoiceFreelance
 			public decimal to_pay;
 		}
 
+		public decimal Vat;
 		private decimal Reimbursment;
+		private string Reimbursment_Description;
 		private decimal Withholding_Tax;
+		private string Save_Directory;
 
 		private List<ACTIVITY_FIELD> Activity_List;
 		private SUMMARY Summary;
 		private object[] Invoice_Grid_View_Default_Value;
 		private IniFile Ini_File;
+		private string Template_File_Name;
 
 		public MainForm()
 		{
@@ -88,11 +92,10 @@ namespace eInvoiceFreelance
 			decimal quantity;
 			decimal unit_price;
 			decimal total_price;
-			decimal vat;
+			OpenFileDialog open_file_dialog;
 
 			Ini_File = new IniFile();
 			Ini_File.Load(App.Name + ".ini");
-
 
 			description = Ini_File.GetKeyValue("Init", "Description");
 			try
@@ -113,21 +116,21 @@ namespace eInvoiceFreelance
 			}
 			try
 			{
-				vat = decimal.Parse(Ini_File.GetKeyValue("Init", "Vat"));
+				Vat = decimal.Parse(Ini_File.GetKeyValue("Init", "Vat"));
 			}
 			catch
 			{
-				vat = 22;
+				Vat = 22;
 			}
 
 			total_price = quantity * unit_price;
 
-			Invoice_Grid_View_Default_Value = new object[] { description, quantity.ToString(), unit_price.ToString(), total_price, true, vat };
+			Invoice_Grid_View_Default_Value = new object[] { description, quantity.ToString(), unit_price.ToString(), total_price, true, Vat };
 
 			Ini_File.SetKeyValue("Init", "Description", description);
 			Ini_File.SetKeyValue("Init", "Quantity", quantity.ToString());
 			Ini_File.SetKeyValue("Init", "UnitPrice", unit_price.ToString());
-			Ini_File.SetKeyValue("Init", "Vat", vat.ToString());
+			Ini_File.SetKeyValue("Init", "Vat", Vat.ToString());
 
 			try
 			{
@@ -139,6 +142,14 @@ namespace eInvoiceFreelance
 				Ini_File.SetKeyValue("Conf", "Reimbursment", Reimbursment.ToString());
 			}
 
+
+			Reimbursment_Description = Ini_File.GetKeyValue("Conf", "ReimbursmentDescrition");
+			if (string.IsNullOrEmpty(Reimbursment_Description))
+			{
+				Reimbursment_Description = "Cont. Prev.";
+			}
+			Ini_File.SetKeyValue("Conf", "ReimbursmentDescrition", Reimbursment_Description);
+
 			try
 			{
 				Withholding_Tax = decimal.Parse(Ini_File.GetKeyValue("Conf", "WithholdingTax"));
@@ -146,8 +157,36 @@ namespace eInvoiceFreelance
 			catch
 			{
 				Withholding_Tax = 20;
-				Ini_File.SetKeyValue("Conf", "WithholdingTax", Reimbursment.ToString());
+				Ini_File.SetKeyValue("Conf", "WithholdingTax", Withholding_Tax.ToString());
 			}
+
+			Template_File_Name = Ini_File.GetKeyValue("Conf", "Template");
+			if (string.IsNullOrEmpty(Template_File_Name))
+			{
+				Template_File_Name = App.Path + "Template.xml"; 
+			}
+
+			Save_Directory = Ini_File.GetKeyValue("Conf", "SaveDirectory");
+
+			if (!File.Exists(Template_File_Name))
+			{
+				open_file_dialog = new OpenFileDialog();
+				open_file_dialog.InitialDirectory = App.Path;
+				open_file_dialog.Filter = "xml files (*.xml)|*.xml";
+				open_file_dialog.RestoreDirectory = true;
+
+				if (open_file_dialog.ShowDialog() == DialogResult.OK)
+				{
+					Template_File_Name = open_file_dialog.FileName;
+				}
+				else
+				{
+					Application.Exit();
+					return;
+				}
+			}
+
+			Ini_File.SetKeyValue("Conf", "Template", Template_File_Name);
 
 			InvoiceGridView.Columns[(int)INVOICE_GRID_VIEW_COLUMN_ID.REIMBOURSE_ID].HeaderText += " " + Reimbursment.ToString("0.00") + "%";
 
@@ -176,6 +215,7 @@ namespace eInvoiceFreelance
 			UpdateSummaryDataGridView();
 			UpdateSaveButton();
 		}
+
 
 		private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
 		{
@@ -395,7 +435,7 @@ namespace eInvoiceFreelance
 
 					Summary.reimbursment += reimbursment;
 
-					vat = (((field.total_price + reimbursment) * field.vat) / 100);
+					vat = (((field.total_price + reimbursment) * Vat) / 100);
 
 					Summary.total_vat += vat;
 				}
@@ -433,7 +473,6 @@ namespace eInvoiceFreelance
 			field.unit_price    = decimal.Parse(Invoice_Grid_View_Default_Value[(int)INVOICE_GRID_VIEW_COLUMN_ID.UNIT_PRICE_ID].ToString().Replace("€ ", ""));
 			field.total_price   = decimal.Parse(Invoice_Grid_View_Default_Value[(int)INVOICE_GRID_VIEW_COLUMN_ID.TOTAL_PRICE_ID].ToString().Replace("€ ", ""));
 			field.reimbursement = (bool)Invoice_Grid_View_Default_Value[(int)INVOICE_GRID_VIEW_COLUMN_ID.REIMBOURSE_ID];
-			field.vat           = (decimal)Invoice_Grid_View_Default_Value[(int)INVOICE_GRID_VIEW_COLUMN_ID.VAT_ID];
 
 			Activity_List.Insert(e.RowIndex, field);
 			UpdateSummaryDataGridView();
@@ -450,6 +489,45 @@ namespace eInvoiceFreelance
 		private void InvoiceGridView_Leave(object sender, EventArgs e)
 		{
 			InvoiceGridView.EndEdit();
+			InvoiceGridView.ClearSelection();
+		}
+
+		private void InvoiceGridView_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
+		{
+			try
+			{
+				if (e.ColumnIndex != (int)INVOICE_GRID_VIEW_COLUMN_ID.REIMBOURSE_ID)
+				{
+					InvoiceGridView.EditCancelled = true;
+
+					InvoiceGridView.ClearSelection();
+					InvoiceGridView.Rows[e.RowIndex].Selected = true;
+
+					InvoiceGridView.BeginEdit(true);
+				}
+			}
+			catch
+			{
+			}
+		}
+
+		private void InvoiceGridView_CellMouseClick(object sender, DataGridViewCellMouseEventArgs e)
+		{
+			try
+			{
+				if (e.ColumnIndex == (int)INVOICE_GRID_VIEW_COLUMN_ID.REIMBOURSE_ID)
+				{
+					InvoiceGridView.EditCancelled = true;
+
+					InvoiceGridView.ClearSelection();
+					InvoiceGridView.Rows[e.RowIndex].Selected = true;
+
+					InvoiceGridView.BeginEdit(true);
+				}
+			}
+			catch
+			{
+			}
 		}
 
 		private void InvoiceGridView_CurrentCellDirtyStateChanged(object sender, EventArgs e)
@@ -591,14 +669,12 @@ namespace eInvoiceFreelance
 				field.unit_price    = 0;
 				field.total_price   = 0;
 				field.reimbursement = false;
-				field.vat           = 0;
 
 				field.description   = InvoiceGridView.Rows[row_id].Cells[(int)INVOICE_GRID_VIEW_COLUMN_ID.DESCRIPTION_ID].Value.ToString();
 				field.quantity      = decimal.Parse(InvoiceGridView.Rows[row_id].Cells[(int)INVOICE_GRID_VIEW_COLUMN_ID.QUANTITY_ID].Value.ToString());
 				field.unit_price    = decimal.Parse(InvoiceGridView.Rows[row_id].Cells[(int)INVOICE_GRID_VIEW_COLUMN_ID.UNIT_PRICE_ID].Value.ToString().Replace("€ ", ""));
 				field.total_price   = decimal.Parse(InvoiceGridView.Rows[row_id].Cells[(int)INVOICE_GRID_VIEW_COLUMN_ID.TOTAL_PRICE_ID].Value.ToString().Replace("€ ", ""));
 				field.reimbursement = bool.Parse(InvoiceGridView.Rows[row_id].Cells[(int)INVOICE_GRID_VIEW_COLUMN_ID.REIMBOURSE_ID].Value.ToString());
-				field.vat           = decimal.Parse(InvoiceGridView.Rows[row_id].Cells[(int)INVOICE_GRID_VIEW_COLUMN_ID.VAT_ID].Value.ToString());
 
 				Activity_List[row_id] = field;
 
@@ -713,6 +789,51 @@ namespace eInvoiceFreelance
 
 		private void OpenStripMenuItem_Click(object sender, EventArgs e)
 		{
+			OpenFileDialog         open_file_dialog;
+			string                 file_name;
+			FatturaElettronicaType invoice;
+			XmlSerializer          serializer;
+			StreamReader           reader;
+
+			open_file_dialog = new OpenFileDialog();
+			open_file_dialog.InitialDirectory = App.Path;
+			open_file_dialog.Filter = "xml files (*.xml)|*.xml";
+			open_file_dialog.RestoreDirectory = true;
+
+			if (open_file_dialog.ShowDialog() == DialogResult.OK)
+			{
+				file_name = open_file_dialog.FileName;
+			}
+			else
+			{
+				return;
+			}
+
+			try
+			{
+				invoice = new FatturaElettronicaType();
+				serializer = new XmlSerializer(typeof(FatturaElettronicaType));
+				reader = new StreamReader(file_name);
+				invoice = (FatturaElettronicaType)serializer.Deserialize(reader);
+				reader.Close();
+			}
+			catch
+			{
+				MessageBoxEx.Show("Impossibile caricare e deserializzare" + file_name, "Errore", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				return;
+			}
+
+
+			InvoiceGridView.Rows.Clear();
+
+
+
+
+
+
+
+
+
 		}
 
 		private void AddStripMenuItem_Click(object sender, EventArgs e)
@@ -748,31 +869,117 @@ namespace eInvoiceFreelance
 
 		private void GenerateToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			FatturaElettronicaType f = new FatturaElettronicaType();
+			FatturaElettronicaType               invoice;
+			XmlSerializer                        template_serializer;
+			XmlSerializer                        invoice_serializer;
+			StreamReader                         reader;
+			XmlSerializerNamespaces              name_space;
+			List<DettaglioLineeType>             bill_list;
+			DataRequestForm                      data_request_form;
+			DataRequestForm.RESULT               result;
 
-			XmlSerializer serializer = new XmlSerializer(typeof(FatturaElettronicaType));
-
-			StreamReader reader = new StreamReader(App.Path + "Template.xml");
-			f = (FatturaElettronicaType)serializer.Deserialize(reader);
-			reader.Close();
-
-			XmlSerializerNamespaces ns = new XmlSerializerNamespaces();
-			ns.Add("ns2", "http://ivaservizi.agenziaentrate.gov.it/docs/xsd/fatture/v1.2");
-			XmlSerializer s = new XmlSerializer(typeof(FatturaElettronicaType));
-
-			List<DettaglioLineeType> l = new List<DettaglioLineeType>(f.FatturaElettronicaBody[0].DatiBeniServizi.DettaglioLinee);
-			DettaglioLineeType p = new DettaglioLineeType();
-
-			p.Descrizione = "aaa";
-			p.AliquotaIVA = 22;
-
-			l.Add(p);
-
-			f.FatturaElettronicaBody[0].DatiBeniServizi.DettaglioLinee = l.ToArray();
-
-			using (StreamWriter writer = new StreamWriter(@"c:\Projects\aaa111.xml"))
+			try
 			{
-				s.Serialize(writer, f, ns);
+				invoice = new FatturaElettronicaType();
+				template_serializer = new XmlSerializer(typeof(FatturaElettronicaType));
+			}
+			catch
+			{
+				MessageBoxEx.Show("Impossibile creare il prototipo di fattura elettronica", "Errore", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				return;
+			}
+
+			try
+			{
+				reader = new StreamReader(Template_File_Name);
+				invoice = (FatturaElettronicaType)template_serializer.Deserialize(reader);
+				reader.Close();
+			}
+			catch
+			{
+				MessageBoxEx.Show("Impossibile caricare e deserializzare" + Template_File_Name, "Errore", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				return;
+			}
+
+			data_request_form = new DataRequestForm(Save_Directory);
+			data_request_form.ShowDialog(this);
+			result = data_request_form.GetResult();
+
+			if (!result.ok)
+			{
+				return;
+			}
+
+			Save_Directory = Path.GetDirectoryName(result.file_name);
+			Ini_File.SetKeyValue("Conf", "SaveDirectory", Save_Directory);
+
+			Ini_File.Save(App.Name + ".ini");
+
+			GenerateBillList(out bill_list);
+			invoice.FatturaElettronicaBody[0].DatiBeniServizi.DettaglioLinee = bill_list.ToArray();
+
+			invoice.FatturaElettronicaBody[0].DatiBeniServizi.DatiRiepilogo[0].AliquotaIVA = Vat;
+			invoice.FatturaElettronicaBody[0].DatiBeniServizi.DatiRiepilogo[0].ImponibileImporto = Summary.total_taxable;
+			invoice.FatturaElettronicaBody[0].DatiBeniServizi.DatiRiepilogo[0].Imposta = Summary.total_vat;
+
+			invoice.FatturaElettronicaBody[0].DatiGenerali.DatiGeneraliDocumento.DatiRitenuta.AliquotaRitenuta = Withholding_Tax;
+			invoice.FatturaElettronicaBody[0].DatiGenerali.DatiGeneraliDocumento.DatiRitenuta.ImportoRitenuta  = Summary.withholding_tax;
+
+			invoice.FatturaElettronicaBody[0].DatiGenerali.DatiGeneraliDocumento.Data = result.date_time;
+			invoice.FatturaElettronicaBody[0].DatiGenerali.DatiGeneraliDocumento.Numero = result.number.ToString();
+			invoice.FatturaElettronicaBody[0].DatiGenerali.DatiGeneraliDocumento.ImportoTotaleDocumento = Summary.total;
+			invoice.FatturaElettronicaBody[0].DatiPagamento[0].DettaglioPagamento[0].ImportoPagamento = Summary.to_pay;
+			invoice.FatturaElettronicaBody[0].DatiPagamento[0].DettaglioPagamento[0].DataRiferimentoTerminiPagamento = result.date_time;
+			invoice.FatturaElettronicaBody[0].DatiPagamento[0].DettaglioPagamento[0].DataScadenzaPagamentoSpecified = true;
+			invoice.FatturaElettronicaBody[0].DatiPagamento[0].DettaglioPagamento[0].DataScadenzaPagamento = result.date_time.AddDays(1);
+
+			invoice_serializer = new XmlSerializer(typeof(FatturaElettronicaType));
+
+			StreamWriter writer = new StreamWriter(result.file_name);
+
+			name_space = new XmlSerializerNamespaces();
+			name_space.Add("ns2", "http://ivaservizi.agenziaentrate.gov.it/docs/xsd/fatture/v1.2");
+
+			invoice_serializer.SerializeWithDecimalFormatting(writer, invoice, name_space);
+		}
+
+		private void GenerateBillList(out List<DettaglioLineeType> bill_list)
+		{
+			DettaglioLineeType bill_filed;
+
+			int line_number;
+
+			bill_list = new List<DettaglioLineeType>();
+
+			line_number = 1;
+			foreach (ACTIVITY_FIELD activity_field in Activity_List)
+			{
+				bill_filed = new DettaglioLineeType();
+				bill_filed.NumeroLinea       = line_number.ToString();
+				bill_filed.Descrizione       = activity_field.description;
+				bill_filed.QuantitaSpecified = true;
+				bill_filed.Quantita          = activity_field.quantity;
+				bill_filed.PrezzoUnitario    = activity_field.unit_price;
+				bill_filed.PrezzoTotale      = activity_field.total_price;
+				bill_filed.AliquotaIVA       = Vat;
+
+				bill_list.Add(bill_filed);
+				line_number++;
+
+				if (activity_field.reimbursement)
+				{
+					bill_filed = new DettaglioLineeType();
+					bill_filed.NumeroLinea       = line_number.ToString();
+					bill_filed.Descrizione       = activity_field.description + " (" + Reimbursment_Description + " " + Reimbursment.ToString() + "%)";
+					bill_filed.QuantitaSpecified = true;
+					bill_filed.Quantita          = 1;
+					bill_filed.PrezzoUnitario    = (activity_field.total_price * Reimbursment) / 100;
+					bill_filed.PrezzoTotale      = (activity_field.total_price * Reimbursment) / 100;
+					bill_filed.AliquotaIVA       = Vat;
+
+					bill_list.Add(bill_filed);
+					line_number++;
+				}
 			}
 		}
 
@@ -795,21 +1002,6 @@ namespace eInvoiceFreelance
 
 			System.Diagnostics.Process.Start(url);
 		}
-
-		private void InvoiceGridView_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
-		{
-			try
-			{
-				InvoiceGridView.EditCancelled = true;
-
-				SummariesGridView.ClearSelection();
-				InvoiceGridView.Rows[e.RowIndex].Selected = true;
-
-				InvoiceGridView.BeginEdit(true);
-			}
-			catch
-			{
-			}
-		}
 	}
 }
+
