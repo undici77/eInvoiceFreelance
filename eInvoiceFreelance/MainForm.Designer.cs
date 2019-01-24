@@ -67,16 +67,25 @@
 			// 
 			// StripMenu
 			// 
+			this.StripMenu.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.StripMenu.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+			this.StripMenu.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+			this.StripMenu.Dock = System.Windows.Forms.DockStyle.None;
 			this.StripMenu.Font = new System.Drawing.Font("Segoe UI", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.StripMenu.GripMargin = new System.Windows.Forms.Padding(0, 0, -4, 0);
 			this.StripMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.OpenStripMenuItem,
             this.AddStripMenuItem,
             this.RemoveStripMenuItem,
             this.GenerateToolStripMenuItem,
             this.AboutToolStripMenuItem});
-			this.StripMenu.Location = new System.Drawing.Point(0, 0);
+			this.StripMenu.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.HorizontalStackWithOverflow;
+			this.StripMenu.Location = new System.Drawing.Point(12, 4);
 			this.StripMenu.Name = "StripMenu";
-			this.StripMenu.Size = new System.Drawing.Size(1084, 28);
+			this.StripMenu.Padding = new System.Windows.Forms.Padding(0);
+			this.StripMenu.Size = new System.Drawing.Size(381, 24);
 			this.StripMenu.TabIndex = 1;
 			this.StripMenu.Text = "StripMenu";
 			// 
@@ -330,6 +339,7 @@
 			this.InvoiceReimbursement.HeaderText = "Cont. Prev.";
 			this.InvoiceReimbursement.MinimumWidth = 60;
 			this.InvoiceReimbursement.Name = "InvoiceReimbursement";
+			this.InvoiceReimbursement.ReadOnly = true;
 			// 
 			// InvoiceVat
 			// 
@@ -346,6 +356,7 @@
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+			this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
 			this.ClientSize = new System.Drawing.Size(1084, 461);
 			this.Controls.Add(this.MainTableLayoutPanel);
 			this.Controls.Add(this.StripMenu);
@@ -378,15 +389,15 @@
 		private System.Windows.Forms.ToolStripMenuItem RemoveStripMenuItem;
 		private System.Windows.Forms.DataGridViewTextBoxColumn SummaryData;
 		private System.Windows.Forms.DataGridViewTextBoxColumn SummaryValue;
+		private System.Windows.Forms.ToolStripMenuItem AboutToolStripMenuItem;
+		private System.Windows.Forms.PictureBox DonatePictureBox;
+		private System.Windows.Forms.TableLayoutPanel MainTableLayoutPanel;
 		private System.Windows.Forms.DataGridViewTextBoxColumn InvoiceDescription;
 		private System.Windows.Forms.DataGridViewTextBoxColumn InvoiceQuantity;
 		private System.Windows.Forms.DataGridViewTextBoxColumn InvoiceUnitPrice;
 		private System.Windows.Forms.DataGridViewTextBoxColumn InvoiceTotalPrice;
 		private System.Windows.Forms.DataGridViewCheckBoxColumn InvoiceReimbursement;
 		private System.Windows.Forms.DataGridViewTextBoxColumn InvoiceVat;
-		private System.Windows.Forms.ToolStripMenuItem AboutToolStripMenuItem;
-		private System.Windows.Forms.PictureBox DonatePictureBox;
-		private System.Windows.Forms.TableLayoutPanel MainTableLayoutPanel;
 	}
 }
 

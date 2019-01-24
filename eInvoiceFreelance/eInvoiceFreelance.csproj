@@ -57,11 +57,11 @@
     <Compile Include="DataGridViewEx.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="DataRequestForm.cs">
+    <Compile Include="InformationForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="DataRequestForm.Designer.cs">
-      <DependentUpon>DataRequestForm.cs</DependentUpon>
+    <Compile Include="InformationForm.Designer.cs">
+      <DependentUpon>InformationForm.cs</DependentUpon>
     </Compile>
     <Compile Include="eInvoice.cs" />
     <Compile Include="IniFile.cs" />
@@ -77,8 +77,8 @@
     <EmbeddedResource Include="AboutBox.resx">
       <DependentUpon>AboutBox.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="DataRequestForm.resx">
-      <DependentUpon>DataRequestForm.cs</DependentUpon>
+    <EmbeddedResource Include="InformationForm.resx">
+      <DependentUpon>InformationForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>

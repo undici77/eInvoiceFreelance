@@ -180,10 +180,8 @@ namespace eInvoiceFreelance
 			Template_File_Name = Ini_File.GetKeyValue("Conf", "Template");
 			if (string.IsNullOrEmpty(Template_File_Name))
 			{
-				Template_File_Name = App.Path + "Template.xml";
+				Template_File_Name = "Template.xml";
 			}
-
-			Save_Directory = Ini_File.GetKeyValue("Conf", "SaveDirectory");
 
 			if (!File.Exists(Template_File_Name))
 			{
@@ -202,6 +200,8 @@ namespace eInvoiceFreelance
 					return;
 				}
 			}
+
+			Save_Directory = Ini_File.GetKeyValue("Conf", "SaveDirectory");
 
 			Ini_File.SetKeyValue("Conf", "Template", Template_File_Name);
 
@@ -289,20 +289,37 @@ namespace eInvoiceFreelance
 
 		private void SummariesGridView_SelectionChanged(object sender, EventArgs e)
 		{
-			SummariesGridView.ClearSelection();
+			 SummariesGridView.ClearSelection();
 		}
 
 		private void InvoiceDataGridViewRowAdd(object[] row)
 		{
+			ACTIVITY_FIELD field;
+
+			field.description   = (string)row[(int)INVOICE_GRID_VIEW_COLUMN_ID.DESCRIPTION_ID];
+			field.quantity      = decimal.Parse((string)row[(int)INVOICE_GRID_VIEW_COLUMN_ID.QUANTITY_ID]);
+			field.unit_price    = decimal.Parse(((string)row[(int)INVOICE_GRID_VIEW_COLUMN_ID.UNIT_PRICE_ID]).Replace("€ ", ""));
+			field.total_price   = decimal.Parse(((string)row[(int)INVOICE_GRID_VIEW_COLUMN_ID.TOTAL_PRICE_ID]).Replace("€ ", ""));
+			field.reimbursement = (bool)row[(int)INVOICE_GRID_VIEW_COLUMN_ID.REIMBOURSE_ID];
+
+			Activity_List.Add(field);
 			InvoiceGridView.Rows.Add(row);
 		}
 
-		private void InvoiceDataGridViewRowAdd(string  description, decimal quantity, decimal unit_price, decimal total_price, bool reimbursement)
+		private void InvoiceDataGridViewRowAdd(string description, decimal quantity, decimal unit_price, decimal total_price, bool reimbursement)
 		{
-			object[] row;
+			object[]       row;
+			ACTIVITY_FIELD field;
 
 			row = new object[] { description, quantity.ToString(), unit_price.ToString(), total_price.ToString(), reimbursement, Vat };
 
+			field.description   = description;
+			field.quantity      = quantity;
+			field.unit_price    = unit_price;
+			field.total_price   = total_price;
+			field.reimbursement = reimbursement;
+
+			Activity_List.Add(field);
 			InvoiceGridView.Rows.Add(row);
 		}
 
@@ -542,35 +559,80 @@ namespace eInvoiceFreelance
 			}
 		}
 
+		private void GenerateBillList(out List<DettaglioLineeType> bill_list)
+		{
+			DettaglioLineeType bill_filed;
+
+			int line_number;
+
+			bill_list = new List<DettaglioLineeType>();
+
+			line_number = 1;
+			foreach (ACTIVITY_FIELD activity_field in Activity_List)
+			{
+				bill_filed = new DettaglioLineeType();
+				bill_filed.NumeroLinea       = line_number.ToString();
+				bill_filed.Descrizione       = activity_field.description;
+				bill_filed.QuantitaSpecified = true;
+				bill_filed.Quantita          = activity_field.quantity;
+				bill_filed.PrezzoUnitario    = activity_field.unit_price;
+				bill_filed.PrezzoTotale      = activity_field.total_price;
+				bill_filed.AliquotaIVA       = Vat;
+
+				bill_list.Add(bill_filed);
+				line_number++;
+
+				if (activity_field.reimbursement)
+				{
+					bill_filed = new DettaglioLineeType();
+					bill_filed.NumeroLinea       = line_number.ToString();
+					bill_filed.Descrizione       = activity_field.description + Reimbursment_String;
+					bill_filed.QuantitaSpecified = true;
+					bill_filed.Quantita          = 1;
+					bill_filed.PrezzoUnitario    = (activity_field.total_price * Reimbursment) / 100;
+					bill_filed.PrezzoTotale      = (activity_field.total_price * Reimbursment) / 100;
+					bill_filed.AliquotaIVA       = Vat;
+
+					bill_list.Add(bill_filed);
+					line_number++;
+				}
+			}
+		}
+
 		private void InvoiceGridView_RowsAdded(object sender, DataGridViewRowsAddedEventArgs e)
 		{
-			int            row_id;
-			ACTIVITY_FIELD field;
-
-			row_id = e.RowIndex;
-
-			field.description   = InvoiceGridView.Rows[row_id].Cells[(int)INVOICE_GRID_VIEW_COLUMN_ID.DESCRIPTION_ID].Value.ToString();
-			field.quantity      = decimal.Parse(InvoiceGridView.Rows[row_id].Cells[(int)INVOICE_GRID_VIEW_COLUMN_ID.QUANTITY_ID].Value.ToString());
-			field.unit_price    = decimal.Parse(InvoiceGridView.Rows[row_id].Cells[(int)INVOICE_GRID_VIEW_COLUMN_ID.UNIT_PRICE_ID].Value.ToString().Replace("€ ", ""));
-			field.total_price   = decimal.Parse(InvoiceGridView.Rows[row_id].Cells[(int)INVOICE_GRID_VIEW_COLUMN_ID.TOTAL_PRICE_ID].Value.ToString().Replace("€ ", ""));
-			field.reimbursement = bool.Parse(InvoiceGridView.Rows[row_id].Cells[(int)INVOICE_GRID_VIEW_COLUMN_ID.REIMBOURSE_ID].Value.ToString());
-
-			Activity_List.Insert(e.RowIndex, field);
-			UpdateSummaryDataGridView();
-			UpdateSaveButton();
+			try 
+			{
+				UpdateSummaryDataGridView();
+				UpdateSaveButton();
+			}
+			catch
+			{
+			}
 		}
 
 		private void InvoiceGridView_RowsRemoved(object sender, DataGridViewRowsRemovedEventArgs e)
 		{
-			Activity_List.RemoveAt(e.RowIndex);
-			UpdateSummaryDataGridView();
-			UpdateSaveButton();
+			try 
+			{
+				Activity_List.RemoveAt(e.RowIndex);
+				UpdateSummaryDataGridView();
+				UpdateSaveButton();
+			}
+			catch
+			{
+			}
 		}
 
 		private void InvoiceGridView_Leave(object sender, EventArgs e)
 		{
-			InvoiceGridView.EndEdit();
-			InvoiceGridView.ClearSelection();
+			try
+			{
+				InvoiceGridView.EndEdit();
+			}
+			catch
+			{
+			}
 		}
 
 		private void InvoiceGridView_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
@@ -579,8 +641,6 @@ namespace eInvoiceFreelance
 			{
 				if (e.ColumnIndex != (int)INVOICE_GRID_VIEW_COLUMN_ID.REIMBOURSE_ID)
 				{
-					InvoiceGridView.EditCancelled = true;
-
 					InvoiceGridView.ClearSelection();
 					InvoiceGridView.Rows[e.RowIndex].Selected = true;
 
@@ -598,12 +658,11 @@ namespace eInvoiceFreelance
 			{
 				if (e.ColumnIndex == (int)INVOICE_GRID_VIEW_COLUMN_ID.REIMBOURSE_ID)
 				{
-					InvoiceGridView.EditCancelled = true;
-
 					InvoiceGridView.ClearSelection();
 					InvoiceGridView.Rows[e.RowIndex].Selected = true;
 
-					InvoiceGridView.BeginEdit(true);
+					DataGridViewCheckBoxCell a = (DataGridViewCheckBoxCell)InvoiceGridView.Rows[e.RowIndex].Cells[e.ColumnIndex];
+					a.Value = !((bool)a.Value);
 				}
 			}
 			catch
@@ -682,11 +741,7 @@ namespace eInvoiceFreelance
 
 			try
 			{
-				if (InvoiceGridView.EditCancelled)
-				{
-					InvoiceGridView.CurrentCell = null;
-				}
-				else
+				if (!InvoiceGridView.EditCancelled)
 				{
 					switch (col_id)
 					{
@@ -720,10 +775,6 @@ namespace eInvoiceFreelance
 					{
 						InvoiceGridView.CurrentCell = InvoiceGridView.Rows[row_id].Cells[(int)col_id];
 						InvoiceGridView.BeginEdit(true);
-					}
-					else
-					{
-						InvoiceGridView.CurrentCell = null;
 					}
 				}
 			}
@@ -954,7 +1005,7 @@ namespace eInvoiceFreelance
 
 		private void AddStripMenuItem_Click(object sender, EventArgs e)
 		{
-			InvoiceGridView.Rows.Add(Invoice_Grid_View_Default_Value);
+			InvoiceDataGridViewRowAdd(Invoice_Grid_View_Default_Value);
 
 			if (!InvoiceGridView.IsCurrentCellInEditMode)
 			{
@@ -991,8 +1042,8 @@ namespace eInvoiceFreelance
 			StreamReader                         reader;
 			XmlSerializerNamespaces              name_space;
 			List<DettaglioLineeType>             bill_list;
-			DataRequestForm                      data_request_form;
-			DataRequestForm.RESULT               result;
+			InformationForm                      info_form;
+			InformationForm.RESULT               result;
 			StreamWriter                         writer;
 
 			try
@@ -1018,9 +1069,9 @@ namespace eInvoiceFreelance
 				return;
 			}
 
-			data_request_form = new DataRequestForm(Save_Directory);
-			data_request_form.ShowDialog(this);
-			result = data_request_form.GetResult();
+			info_form = new InformationForm(Save_Directory);
+			info_form.ShowDialog(this);
+			result = info_form.GetResult();
 
 			if (!result.ok)
 			{
@@ -1067,46 +1118,6 @@ namespace eInvoiceFreelance
 			invoice_serializer.SerializeWithDecimalFormatting(writer, invoice, name_space);
 
 			writer.Close();
-		}
-
-		private void GenerateBillList(out List<DettaglioLineeType> bill_list)
-		{
-			DettaglioLineeType bill_filed;
-
-			int line_number;
-
-			bill_list = new List<DettaglioLineeType>();
-
-			line_number = 1;
-			foreach (ACTIVITY_FIELD activity_field in Activity_List)
-			{
-				bill_filed = new DettaglioLineeType();
-				bill_filed.NumeroLinea       = line_number.ToString();
-				bill_filed.Descrizione       = activity_field.description;
-				bill_filed.QuantitaSpecified = true;
-				bill_filed.Quantita          = activity_field.quantity;
-				bill_filed.PrezzoUnitario    = activity_field.unit_price;
-				bill_filed.PrezzoTotale      = activity_field.total_price;
-				bill_filed.AliquotaIVA       = Vat;
-
-				bill_list.Add(bill_filed);
-				line_number++;
-
-				if (activity_field.reimbursement)
-				{
-					bill_filed = new DettaglioLineeType();
-					bill_filed.NumeroLinea       = line_number.ToString();
-					bill_filed.Descrizione       = activity_field.description + Reimbursment_String;
-					bill_filed.QuantitaSpecified = true;
-					bill_filed.Quantita          = 1;
-					bill_filed.PrezzoUnitario    = (activity_field.total_price * Reimbursment) / 100;
-					bill_filed.PrezzoTotale      = (activity_field.total_price * Reimbursment) / 100;
-					bill_filed.AliquotaIVA       = Vat;
-
-					bill_list.Add(bill_filed);
-					line_number++;
-				}
-			}
 		}
 
 		private void DonatePictureBox_Click(object sender, EventArgs e)

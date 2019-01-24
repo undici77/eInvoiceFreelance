@@ -21,7 +21,7 @@ public class DataGridViewEx : DataGridView
 		}
 	}
 
-	protected override bool ProcessDialogKey(Keys key_data)
+	protected override bool ProcessCmdKey(ref Message msg, Keys key_data)
 	{
 		if ((key_data == Keys.Enter) || (key_data == Keys.Tab))
 		{
@@ -36,6 +36,6 @@ public class DataGridViewEx : DataGridView
 			Edit_Cancelled = true;
 		}
 
-		return (base.ProcessDialogKey(key_data));
+		return (base.ProcessCmdKey(ref msg, key_data));
 	}
 }

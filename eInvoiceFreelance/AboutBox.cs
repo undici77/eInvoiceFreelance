@@ -160,10 +160,6 @@ namespace eInvoiceFreelance
 
 		private void AboutBox_FormClosed(object sender, FormClosedEventArgs e)
 		{
-			if (!Ok)
-			{
-				Donate();
-			}
 		}
 
 		private void BoxDescriptionText_VScroll(object sender, EventArgs e)
