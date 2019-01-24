@@ -65,9 +65,21 @@ namespace eInvoiceFreelance
 			public decimal to_pay;
 		}
 
-		public decimal Vat;
+		private struct BANK_ACCOUNT
+		{
+			public string beneficiary;
+			public string financial_institute;
+			public string iban;
+			public string abi;
+			public string cab;
+			public string bic;
+		};
+
+		private BANK_ACCOUNT Bank_Account;
+		private decimal Vat;
 		private decimal Reimbursment;
 		private string Reimbursment_Description;
+		private string Reimbursment_String;
 		private decimal Withholding_Tax;
 		private string Save_Directory;
 
@@ -93,6 +105,9 @@ namespace eInvoiceFreelance
 			decimal unit_price;
 			decimal total_price;
 			OpenFileDialog open_file_dialog;
+			AboutBox about;
+			string disclaimer_signature;
+			bool disclaimer_accepted;
 
 			Ini_File = new IniFile();
 			Ini_File.Load(App.Name + ".ini");
@@ -125,7 +140,7 @@ namespace eInvoiceFreelance
 
 			total_price = quantity * unit_price;
 
-			Invoice_Grid_View_Default_Value = new object[] { description, quantity.ToString(), unit_price.ToString(), total_price, true, Vat };
+			Invoice_Grid_View_Default_Value = new object[] { description, quantity.ToString(), unit_price.ToString(), total_price.ToString(), true, Vat };
 
 			Ini_File.SetKeyValue("Init", "Description", description);
 			Ini_File.SetKeyValue("Init", "Quantity", quantity.ToString());
@@ -150,6 +165,8 @@ namespace eInvoiceFreelance
 			}
 			Ini_File.SetKeyValue("Conf", "ReimbursmentDescrition", Reimbursment_Description);
 
+			Reimbursment_String = " (" + Reimbursment_Description + " " + Reimbursment.ToString() + "%)";
+
 			try
 			{
 				Withholding_Tax = decimal.Parse(Ini_File.GetKeyValue("Conf", "WithholdingTax"));
@@ -163,7 +180,7 @@ namespace eInvoiceFreelance
 			Template_File_Name = Ini_File.GetKeyValue("Conf", "Template");
 			if (string.IsNullOrEmpty(Template_File_Name))
 			{
-				Template_File_Name = App.Path + "Template.xml"; 
+				Template_File_Name = App.Path + "Template.xml";
 			}
 
 			Save_Directory = Ini_File.GetKeyValue("Conf", "SaveDirectory");
@@ -210,6 +227,53 @@ namespace eInvoiceFreelance
 			SummariesGridView.Rows.Add("Ritenuta d'acconto " + Withholding_Tax.ToString("0.00") + "%", 0);
 			SummariesGridView.Rows.Add("Totale", 0);
 
+			Bank_Account.beneficiary = Ini_File.GetKeyValue("BankAccount", "Beneficiary");
+			Bank_Account.financial_institute = Ini_File.GetKeyValue("BankAccount", "FinancialInstitute");
+			Bank_Account.iban = Ini_File.GetKeyValue("BankAccount", "IBAN");
+			Bank_Account.abi = Ini_File.GetKeyValue("BankAccount", "ABI");
+			Bank_Account.cab = Ini_File.GetKeyValue("BankAccount", "CAB");
+			Bank_Account.bic = Ini_File.GetKeyValue("BankAccount", "BIC");
+
+			if (string.IsNullOrEmpty(Bank_Account.beneficiary))
+			{
+				Bank_Account.beneficiary = string.Empty;
+			}
+			if (string.IsNullOrEmpty(Bank_Account.financial_institute))
+			{
+				Bank_Account.beneficiary = string.Empty;
+			}
+			if (string.IsNullOrEmpty(Bank_Account.iban))
+			{
+				Bank_Account.iban = string.Empty;
+			}
+			if (string.IsNullOrEmpty(Bank_Account.abi))
+			{
+				Bank_Account.abi = string.Empty;
+			}
+			if (string.IsNullOrEmpty(Bank_Account.cab))
+			{
+				Bank_Account.cab = string.Empty;
+			}
+			if (string.IsNullOrEmpty(Bank_Account.bic))
+			{
+				Bank_Account.bic = string.Empty;
+			}
+
+			disclaimer_signature = (App.Name + " " + App.Version);
+			disclaimer_accepted = (Ini_File.GetKeyValue("Disclaimer", "Accepted") ==  disclaimer_signature);
+			Ini_File.SetKeyValue("Disclaimer", "Accepted", disclaimer_signature);
+
+			if (!disclaimer_accepted)
+			{
+				about = new AboutBox(false);
+				about.ShowDialog(this);
+				if (!about.Result)
+				{
+					Application.Exit();
+					return;
+				}
+			}
+
 			Ini_File.Save(App.Name + ".ini");
 
 			UpdateSummaryDataGridView();
@@ -226,6 +290,20 @@ namespace eInvoiceFreelance
 		private void SummariesGridView_SelectionChanged(object sender, EventArgs e)
 		{
 			SummariesGridView.ClearSelection();
+		}
+
+		private void InvoiceDataGridViewRowAdd(object[] row)
+		{
+			InvoiceGridView.Rows.Add(row);
+		}
+
+		private void InvoiceDataGridViewRowAdd(string  description, decimal quantity, decimal unit_price, decimal total_price, bool reimbursement)
+		{
+			object[] row;
+
+			row = new object[] { description, quantity.ToString(), unit_price.ToString(), total_price.ToString(), reimbursement, Vat };
+
+			InvoiceGridView.Rows.Add(row);
 		}
 
 		private bool ValidateDescriptionCell(DataGridViewRow row)
@@ -466,13 +544,16 @@ namespace eInvoiceFreelance
 
 		private void InvoiceGridView_RowsAdded(object sender, DataGridViewRowsAddedEventArgs e)
 		{
+			int            row_id;
 			ACTIVITY_FIELD field;
 
-			field.description   = (string)Invoice_Grid_View_Default_Value[(int)INVOICE_GRID_VIEW_COLUMN_ID.DESCRIPTION_ID];
-			field.quantity      = decimal.Parse(Invoice_Grid_View_Default_Value[(int)INVOICE_GRID_VIEW_COLUMN_ID.QUANTITY_ID].ToString());
-			field.unit_price    = decimal.Parse(Invoice_Grid_View_Default_Value[(int)INVOICE_GRID_VIEW_COLUMN_ID.UNIT_PRICE_ID].ToString().Replace("€ ", ""));
-			field.total_price   = decimal.Parse(Invoice_Grid_View_Default_Value[(int)INVOICE_GRID_VIEW_COLUMN_ID.TOTAL_PRICE_ID].ToString().Replace("€ ", ""));
-			field.reimbursement = (bool)Invoice_Grid_View_Default_Value[(int)INVOICE_GRID_VIEW_COLUMN_ID.REIMBOURSE_ID];
+			row_id = e.RowIndex;
+
+			field.description   = InvoiceGridView.Rows[row_id].Cells[(int)INVOICE_GRID_VIEW_COLUMN_ID.DESCRIPTION_ID].Value.ToString();
+			field.quantity      = decimal.Parse(InvoiceGridView.Rows[row_id].Cells[(int)INVOICE_GRID_VIEW_COLUMN_ID.QUANTITY_ID].Value.ToString());
+			field.unit_price    = decimal.Parse(InvoiceGridView.Rows[row_id].Cells[(int)INVOICE_GRID_VIEW_COLUMN_ID.UNIT_PRICE_ID].Value.ToString().Replace("€ ", ""));
+			field.total_price   = decimal.Parse(InvoiceGridView.Rows[row_id].Cells[(int)INVOICE_GRID_VIEW_COLUMN_ID.TOTAL_PRICE_ID].Value.ToString().Replace("€ ", ""));
+			field.reimbursement = bool.Parse(InvoiceGridView.Rows[row_id].Cells[(int)INVOICE_GRID_VIEW_COLUMN_ID.REIMBOURSE_ID].Value.ToString());
 
 			Activity_List.Insert(e.RowIndex, field);
 			UpdateSummaryDataGridView();
@@ -794,9 +875,13 @@ namespace eInvoiceFreelance
 			FatturaElettronicaType invoice;
 			XmlSerializer          serializer;
 			StreamReader           reader;
+			int                    lines_number;
+			int                    id;
+			DettaglioLineeType     line;
+			DettaglioLineeType     field;
 
 			open_file_dialog = new OpenFileDialog();
-			open_file_dialog.InitialDirectory = App.Path;
+			open_file_dialog.InitialDirectory = Save_Directory;
 			open_file_dialog.Filter = "xml files (*.xml)|*.xml";
 			open_file_dialog.RestoreDirectory = true;
 
@@ -819,21 +904,52 @@ namespace eInvoiceFreelance
 			}
 			catch
 			{
-				MessageBoxEx.Show("Impossibile caricare e deserializzare" + file_name, "Errore", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				MessageBox.Show("Impossibile caricare e deserializzare" + file_name, "Errore", MessageBoxButtons.OK, MessageBoxIcon.Error);
 				return;
 			}
 
-
 			InvoiceGridView.Rows.Clear();
+			Activity_List.Clear();
 
+			Vat = invoice.FatturaElettronicaBody[0].DatiBeniServizi.DatiRiepilogo[0].AliquotaIVA;
 
+			lines_number = invoice.FatturaElettronicaBody[0].DatiBeniServizi.DettaglioLinee.Length;
 
+			id = 0;
+			line = null;
+			field = null;
+			while (id < lines_number)
+			{
+				if (line == null)
+				{
+					line = invoice.FatturaElettronicaBody[0].DatiBeniServizi.DettaglioLinee[id];
+					id++;
+				}
 
+				if (line.Descrizione.Contains(Reimbursment_String) && (field != null))
+				{
+					InvoiceDataGridViewRowAdd(field.Descrizione, field.Quantita, field.PrezzoUnitario, field.PrezzoTotale, true);
+					field = null;
+					line = null;
+				}
+				else if (field == null)
+				{
+					field = line;
+					line = null;
+				}
+				else
+				{
+					InvoiceDataGridViewRowAdd(field.Descrizione, field.Quantita, field.PrezzoUnitario, field.PrezzoTotale, false);
+					field = null;
+				}
+			}
 
-
-
-
-
+			if (field != null)
+			{
+				InvoiceDataGridViewRowAdd(field.Descrizione, field.Quantita, field.PrezzoUnitario, field.PrezzoTotale, false);
+				field = null;
+				line = null;
+			}
 		}
 
 		private void AddStripMenuItem_Click(object sender, EventArgs e)
@@ -877,6 +993,7 @@ namespace eInvoiceFreelance
 			List<DettaglioLineeType>             bill_list;
 			DataRequestForm                      data_request_form;
 			DataRequestForm.RESULT               result;
+			StreamWriter                         writer;
 
 			try
 			{
@@ -885,7 +1002,7 @@ namespace eInvoiceFreelance
 			}
 			catch
 			{
-				MessageBoxEx.Show("Impossibile creare il prototipo di fattura elettronica", "Errore", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				MessageBox.Show("Impossibile creare il prototipo di fattura elettronica", "Errore", MessageBoxButtons.OK, MessageBoxIcon.Error);
 				return;
 			}
 
@@ -897,7 +1014,7 @@ namespace eInvoiceFreelance
 			}
 			catch
 			{
-				MessageBoxEx.Show("Impossibile caricare e deserializzare" + Template_File_Name, "Errore", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				MessageBox.Show("Impossibile caricare e deserializzare" + Template_File_Name, "Errore", MessageBoxButtons.OK, MessageBoxIcon.Error);
 				return;
 			}
 
@@ -933,14 +1050,23 @@ namespace eInvoiceFreelance
 			invoice.FatturaElettronicaBody[0].DatiPagamento[0].DettaglioPagamento[0].DataScadenzaPagamentoSpecified = true;
 			invoice.FatturaElettronicaBody[0].DatiPagamento[0].DettaglioPagamento[0].DataScadenzaPagamento = result.date_time.AddDays(1);
 
+			invoice.FatturaElettronicaBody[0].DatiPagamento[0].DettaglioPagamento[0].Beneficiario = Bank_Account.beneficiary;
+			invoice.FatturaElettronicaBody[0].DatiPagamento[0].DettaglioPagamento[0].IstitutoFinanziario = Bank_Account.financial_institute;
+			invoice.FatturaElettronicaBody[0].DatiPagamento[0].DettaglioPagamento[0].IBAN = Bank_Account.iban;
+			invoice.FatturaElettronicaBody[0].DatiPagamento[0].DettaglioPagamento[0].ABI = Bank_Account.abi;
+			invoice.FatturaElettronicaBody[0].DatiPagamento[0].DettaglioPagamento[0].CAB = Bank_Account.cab;
+			invoice.FatturaElettronicaBody[0].DatiPagamento[0].DettaglioPagamento[0].BIC = Bank_Account.bic;
+			
 			invoice_serializer = new XmlSerializer(typeof(FatturaElettronicaType));
 
-			StreamWriter writer = new StreamWriter(result.file_name);
+			writer = new StreamWriter(result.file_name);
 
 			name_space = new XmlSerializerNamespaces();
 			name_space.Add("ns2", "http://ivaservizi.agenziaentrate.gov.it/docs/xsd/fatture/v1.2");
 
 			invoice_serializer.SerializeWithDecimalFormatting(writer, invoice, name_space);
+
+			writer.Close();
 		}
 
 		private void GenerateBillList(out List<DettaglioLineeType> bill_list)
@@ -970,7 +1096,7 @@ namespace eInvoiceFreelance
 				{
 					bill_filed = new DettaglioLineeType();
 					bill_filed.NumeroLinea       = line_number.ToString();
-					bill_filed.Descrizione       = activity_field.description + " (" + Reimbursment_Description + " " + Reimbursment.ToString() + "%)";
+					bill_filed.Descrizione       = activity_field.description + Reimbursment_String;
 					bill_filed.QuantitaSpecified = true;
 					bill_filed.Quantita          = 1;
 					bill_filed.PrezzoUnitario    = (activity_field.total_price * Reimbursment) / 100;
@@ -1001,6 +1127,15 @@ namespace eInvoiceFreelance
 			       "&bn=" + "PP%2dDonationsBF";
 
 			System.Diagnostics.Process.Start(url);
+		}
+
+		private void AboutToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			AboutBox about;
+
+			about = new AboutBox(true);
+
+			about.ShowDialog(this);
 		}
 	}
 }

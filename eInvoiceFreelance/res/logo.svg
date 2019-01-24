@@ -1,0 +1,26 @@
+<svg width="96" height="96" xmlns="http://www.w3.org/2000/svg">
+
+ <g>
+  <title>background</title>
+  <rect fill="none" id="canvas_background" height="402" width="582" y="-1" x="-1"/>
+ </g>
+ <g>
+  <title>Layer 1</title>
+  <path id="svg_2" fill-rule="evenodd" fill="#4FA7A0" d="m48,94.871002c-25.886,0 -46.872,-20.984001 -46.872,-46.871002c0,-25.886 20.986,-46.872 46.872,-46.872c25.887001,0 46.871002,20.985001 46.871002,46.872c0,25.887001 -20.984001,46.871002 -46.871002,46.871002" clip-rule="evenodd"/>
+  <path id="svg_3" fill-rule="evenodd" fill="#38817B" d="m71.203003,20.02l23.445999,23.41c2.834999,29.325996 -22.007004,54.055 -51.231003,51.219002l-17.837,-17.885002c0.616001,0.457001 1.376001,0.728996 2.193001,0.728996l40.450998,0c2.032005,0 3.706001,-1.673996 3.706001,-3.704994l0,-51.574001l-0.727997,-2.194z" clip-rule="evenodd"/>
+  <path id="svg_4" stroke-width="1.9998" stroke-miterlimit="22.9256" stroke-linejoin="round" stroke-linecap="round" stroke="#FFFFFF" fill="none" d="m40.562,18.424l28.118,0c2.038002,0 3.705002,1.677 3.705002,3.705999l0,51.572004c0,2.032997 -1.674004,3.704994 -3.705002,3.704994l-40.451,0c-2.028999,0 -3.705,-1.666 -3.705,-3.704994l0,-40.438004l16.038,-14.84z"/>
+  <path id="svg_5" stroke-width="1.9998" stroke-miterlimit="22.9256" stroke="#FFFFFF" fill="none" d="m41.299999,18.424l0,13.681999c0,1.085003 -0.898998,1.984001 -1.983997,1.984001l-14.793001,0"/>
+  <path id="svg_6" stroke-width="2.001" stroke-miterlimit="22.9256" stroke="#FFFFFF" fill="none" d="m49.419998,24.715l15.476006,0c0.528,0 0.961998,0.431999 0.961998,0.961l0,8.127001c0,0.528999 -0.433998,0.960999 -0.961998,0.960999l-15.476006,0c-0.529999,0 -0.961998,-0.432999 -0.961998,-0.960999l0,-8.127001c0,-0.529001 0.431999,-0.961 0.961998,-0.961z"/>
+  <line id="svg_8" y2="52.191" y1="52.191" x2="45.594" x1="30.375" stroke-width="1.9998" stroke-miterlimit="22.9256" stroke-linejoin="round" stroke-linecap="round" stroke="#FFFFFF" fill="none"/>
+  <line id="svg_9" y2="60.99" y1="60.99" x2="44.439" x1="30.375" stroke-width="1.9998" stroke-miterlimit="22.9256" stroke-linejoin="round" stroke-linecap="round" stroke="#FFFFFF" fill="none"/>
+  <line id="svg_10" y2="69.791" y1="69.791" x2="41.452" x1="30.375" stroke-width="1.9998" stroke-miterlimit="22.9256" stroke-linejoin="round" stroke-linecap="round" stroke="#FFFFFF" fill="none"/>
+  <polygon id="svg_11" stroke-width="1.9998" stroke-miterlimit="22.9256" stroke-linejoin="round" stroke-linecap="round" stroke="#FFFFFF" points="   57.383,47.534 56.047,48.822 54.302,48.189 53.605,49.91 51.754,50.041 51.816,51.895 50.179,52.768 50.99,54.438 49.85,55.9    51.27,57.096 50.822,58.896 52.605,59.41 52.93,61.238 54.769,60.98 55.808,62.52 57.383,61.537 58.957,62.52 59.997,60.98    61.835,61.238 62.159,59.41 63.943,58.896 63.495,57.096 64.916,55.9 63.775,54.438 64.587,52.768 62.949,51.896 63.012,50.041    61.16,49.91 60.464,48.189 58.719,48.822  " fill="none"/>
+  <polygon id="svg_12" stroke-width="1.9998" stroke-miterlimit="22.9256" stroke-linejoin="round" stroke-linecap="round" stroke="#FFFFFF" points="   58.806,62.424 57.082,66.066 59.822,71.861 62.518,68.266 67.484,68.24 63.172,59.119 62.159,59.41 61.835,61.238 59.997,60.98    58.957,62.52  " fill="none"/>
+  <polygon id="svg_13" stroke-width="1.9998" stroke-miterlimit="22.9256" stroke-linejoin="round" stroke-linecap="round" stroke="#FFFFFF" points="   58.806,62.424 54.343,71.861 51.646,68.266 46.681,68.24 51.065,58.967 52.605,59.41 52.93,61.238 54.769,60.98 55.808,62.52    57.383,61.537  " fill="none"/>
+  <path d="m31.328739,42.455788c0,0.257469 0.440128,0.697601 0.643679,0.90115c0.407099,0.407097 1.023027,0.579147 1.931036,0.643677c1.155704,0.082134 1.802299,-0.257469 3.218391,-0.90115l0.257469,-0.257469" id="svg_18" fill-opacity="null" stroke-opacity="null" stroke-width="null" stroke="null" fill="none"/>
+  <path d="m30.170118,39.752338c0.128735,0.514942 0.959282,1.902767 2.703447,3.218391c1.058144,0.798157 3.07515,1.850796 3.862072,2.059772c0.634434,0.168484 2.96188,0.605202 3.733334,0.643677c1.292171,0.064445 2.059772,0.128735 2.44598,0.128735l0.257469,0l0.128738,0" id="svg_19" fill-opacity="null" stroke-opacity="null" stroke-width="null" stroke="null" fill="none"/>
+  <path d="m38.022995,37.692566c0.257469,0.386208 1.029884,1.158623 1.802299,1.931038l0.257469,0.128735" id="svg_20" fill-opacity="null" stroke-opacity="null" stroke-width="null" stroke="null" fill="none"/>
+  <path d="m41.241386,42.06958c0.514942,0.257473 2.908733,1.420059 6.694256,2.832184c2.669968,0.995987 4.756359,1.480297 5.664368,1.54483c0.385235,0.027378 0.514942,0.128735 0.772415,0.128735l0.514942,-0.514942" id="svg_21" fill-opacity="null" stroke-opacity="null" stroke-width="null" stroke="null" fill="none"/>
+  <text font-weight="bold" xml:space="preserve" text-anchor="start" font-family="Arvo, sans-serif" font-size="12" id="svg_22" y="45.931651" x="29.140233" stroke-opacity="null" stroke-width="0" stroke="null" fill="#ffffff">XML</text>
+ </g>
+</svg>

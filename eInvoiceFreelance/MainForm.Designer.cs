@@ -45,10 +45,12 @@
 			this.AddStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.RemoveStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.GenerateToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.AboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.SummariesGridView = new System.Windows.Forms.DataGridView();
 			this.SummaryData = new System.Windows.Forms.DataGridViewTextBoxColumn();
 			this.SummaryValue = new System.Windows.Forms.DataGridViewTextBoxColumn();
 			this.DonatePictureBox = new System.Windows.Forms.PictureBox();
+			this.MainTableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
 			this.InvoiceGridView = new DataGridViewEx();
 			this.InvoiceDescription = new System.Windows.Forms.DataGridViewTextBoxColumn();
 			this.InvoiceQuantity = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -59,6 +61,7 @@
 			this.StripMenu.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.SummariesGridView)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.DonatePictureBox)).BeginInit();
+			this.MainTableLayoutPanel.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.InvoiceGridView)).BeginInit();
 			this.SuspendLayout();
 			// 
@@ -69,7 +72,8 @@
             this.OpenStripMenuItem,
             this.AddStripMenuItem,
             this.RemoveStripMenuItem,
-            this.GenerateToolStripMenuItem});
+            this.GenerateToolStripMenuItem,
+            this.AboutToolStripMenuItem});
 			this.StripMenu.Location = new System.Drawing.Point(0, 0);
 			this.StripMenu.Name = "StripMenu";
 			this.StripMenu.Size = new System.Drawing.Size(1084, 28);
@@ -104,6 +108,13 @@
 			this.GenerateToolStripMenuItem.Text = "Genera";
 			this.GenerateToolStripMenuItem.Click += new System.EventHandler(this.GenerateToolStripMenuItem_Click);
 			// 
+			// AboutToolStripMenuItem
+			// 
+			this.AboutToolStripMenuItem.Name = "AboutToolStripMenuItem";
+			this.AboutToolStripMenuItem.Size = new System.Drawing.Size(105, 24);
+			this.AboutToolStripMenuItem.Text = "Informazioni";
+			this.AboutToolStripMenuItem.Click += new System.EventHandler(this.AboutToolStripMenuItem_Click);
+			// 
 			// SummariesGridView
 			// 
 			this.SummariesGridView.AllowUserToAddRows = false;
@@ -133,7 +144,7 @@
 			dataGridViewCellStyle3.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
 			dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
 			this.SummariesGridView.DefaultCellStyle = dataGridViewCellStyle3;
-			this.SummariesGridView.Location = new System.Drawing.Point(13, 277);
+			this.SummariesGridView.Location = new System.Drawing.Point(3, 249);
 			this.SummariesGridView.MultiSelect = false;
 			this.SummariesGridView.Name = "SummariesGridView";
 			this.SummariesGridView.ReadOnly = true;
@@ -151,7 +162,7 @@
 			this.SummariesGridView.ShowCellToolTips = false;
 			this.SummariesGridView.ShowEditingIcon = false;
 			this.SummariesGridView.ShowRowErrors = false;
-			this.SummariesGridView.Size = new System.Drawing.Size(705, 172);
+			this.SummariesGridView.Size = new System.Drawing.Size(706, 166);
 			this.SummariesGridView.TabIndex = 2;
 			this.SummariesGridView.SelectionChanged += new System.EventHandler(this.SummariesGridView_SelectionChanged);
 			// 
@@ -180,13 +191,32 @@
 			this.DonatePictureBox.Cursor = System.Windows.Forms.Cursors.Hand;
 			this.DonatePictureBox.Image = ((System.Drawing.Image)(resources.GetObject("DonatePictureBox.Image")));
 			this.DonatePictureBox.InitialImage = null;
-			this.DonatePictureBox.Location = new System.Drawing.Point(724, 277);
+			this.DonatePictureBox.Location = new System.Drawing.Point(715, 249);
 			this.DonatePictureBox.Name = "DonatePictureBox";
-			this.DonatePictureBox.Size = new System.Drawing.Size(348, 172);
+			this.DonatePictureBox.Size = new System.Drawing.Size(342, 166);
 			this.DonatePictureBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
 			this.DonatePictureBox.TabIndex = 3;
 			this.DonatePictureBox.TabStop = false;
 			this.DonatePictureBox.Click += new System.EventHandler(this.DonatePictureBox_Click);
+			// 
+			// MainTableLayoutPanel
+			// 
+			this.MainTableLayoutPanel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.MainTableLayoutPanel.ColumnCount = 2;
+			this.MainTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+			this.MainTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 348F));
+			this.MainTableLayoutPanel.Controls.Add(this.DonatePictureBox, 1, 1);
+			this.MainTableLayoutPanel.Controls.Add(this.InvoiceGridView, 0, 0);
+			this.MainTableLayoutPanel.Controls.Add(this.SummariesGridView, 0, 1);
+			this.MainTableLayoutPanel.Location = new System.Drawing.Point(12, 31);
+			this.MainTableLayoutPanel.Name = "MainTableLayoutPanel";
+			this.MainTableLayoutPanel.RowCount = 2;
+			this.MainTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+			this.MainTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 172F));
+			this.MainTableLayoutPanel.Size = new System.Drawing.Size(1060, 418);
+			this.MainTableLayoutPanel.TabIndex = 4;
 			// 
 			// InvoiceGridView
 			// 
@@ -211,6 +241,7 @@
             this.InvoiceTotalPrice,
             this.InvoiceReimbursement,
             this.InvoiceVat});
+			this.MainTableLayoutPanel.SetColumnSpan(this.InvoiceGridView, 2);
 			dataGridViewCellStyle10.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
 			dataGridViewCellStyle10.BackColor = System.Drawing.SystemColors.Window;
 			dataGridViewCellStyle10.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -222,7 +253,7 @@
 			this.InvoiceGridView.EditCancelled = false;
 			this.InvoiceGridView.EditMode = System.Windows.Forms.DataGridViewEditMode.EditProgrammatically;
 			this.InvoiceGridView.EnableHeadersVisualStyles = false;
-			this.InvoiceGridView.Location = new System.Drawing.Point(13, 31);
+			this.InvoiceGridView.Location = new System.Drawing.Point(3, 3);
 			this.InvoiceGridView.Name = "InvoiceGridView";
 			dataGridViewCellStyle11.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
 			dataGridViewCellStyle11.BackColor = System.Drawing.SystemColors.Control;
@@ -238,7 +269,7 @@
 			this.InvoiceGridView.ShowCellToolTips = false;
 			this.InvoiceGridView.ShowEditingIcon = false;
 			this.InvoiceGridView.ShowRowErrors = false;
-			this.InvoiceGridView.Size = new System.Drawing.Size(1059, 240);
+			this.InvoiceGridView.Size = new System.Drawing.Size(1054, 240);
 			this.InvoiceGridView.TabIndex = 0;
 			this.InvoiceGridView.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.InvoiceGridView_CellDoubleClick);
 			this.InvoiceGridView.CellEndEdit += new System.Windows.Forms.DataGridViewCellEventHandler(this.InvoiceGridView_CellEndEdit);
@@ -316,9 +347,7 @@
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(1084, 461);
-			this.Controls.Add(this.DonatePictureBox);
-			this.Controls.Add(this.SummariesGridView);
-			this.Controls.Add(this.InvoiceGridView);
+			this.Controls.Add(this.MainTableLayoutPanel);
 			this.Controls.Add(this.StripMenu);
 			this.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
@@ -331,6 +360,7 @@
 			this.StripMenu.PerformLayout();
 			((System.ComponentModel.ISupportInitialize)(this.SummariesGridView)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.DonatePictureBox)).EndInit();
+			this.MainTableLayoutPanel.ResumeLayout(false);
 			((System.ComponentModel.ISupportInitialize)(this.InvoiceGridView)).EndInit();
 			this.ResumeLayout(false);
 			this.PerformLayout();
@@ -346,7 +376,6 @@
 		private System.Windows.Forms.ToolStripMenuItem OpenStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem AddStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem RemoveStripMenuItem;
-		private System.Windows.Forms.PictureBox DonatePictureBox;
 		private System.Windows.Forms.DataGridViewTextBoxColumn SummaryData;
 		private System.Windows.Forms.DataGridViewTextBoxColumn SummaryValue;
 		private System.Windows.Forms.DataGridViewTextBoxColumn InvoiceDescription;
@@ -355,6 +384,9 @@
 		private System.Windows.Forms.DataGridViewTextBoxColumn InvoiceTotalPrice;
 		private System.Windows.Forms.DataGridViewCheckBoxColumn InvoiceReimbursement;
 		private System.Windows.Forms.DataGridViewTextBoxColumn InvoiceVat;
+		private System.Windows.Forms.ToolStripMenuItem AboutToolStripMenuItem;
+		private System.Windows.Forms.PictureBox DonatePictureBox;
+		private System.Windows.Forms.TableLayoutPanel MainTableLayoutPanel;
 	}
 }
 
