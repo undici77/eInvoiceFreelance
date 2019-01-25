@@ -16,39 +16,84 @@ namespace eInvoiceFreelance
 		[return: MarshalAs(UnmanagedType.Bool)]
 		static extern bool SetForegroundWindow(IntPtr hWnd);
 
-		static MainForm _MainForm;
+		static MainForm Main_Form;
 		static public MainForm Instance
 		{
 			get
 			{
-				return (_MainForm);
+				return (Main_Form);
 			}
 		}
 
-		static string _Version;
+		static string Software_Version;
 		static public string Version
 		{
 			get
 			{
-				return (_Version);
+				return (Software_Version);
 			}
 		}
 
-		static string _Name;
+		static string Software_Name;
 		static public string Name
 		{
 			get
 			{
-				return (_Name);
+				return (Software_Name);
 			}
 		}
 
-		static string _Path;
+		static string Exe_Path;
 		static public string Path
 		{
 			get
 			{
-				return (_Path);
+				return (Exe_Path);
+			}
+		}
+
+		static OperatingSystem Operating_System;
+		static public OperatingSystem OperatingSystem
+		{
+			get
+			{
+				return (OperatingSystem);
+			}
+		}
+
+		static PlatformID Platform_Id;
+		static public PlatformID PlatformId
+		{
+			get
+			{
+				return (Platform_Id);
+			}
+		}
+
+		static public bool IsWindows
+		{
+			get
+			{
+				return((Platform_Id == PlatformID.Win32NT)      ||
+				       (Platform_Id == PlatformID.Win32S)       ||
+				       (Platform_Id == PlatformID.Win32Windows) ||
+				       (Platform_Id == PlatformID.WinCE));
+			}
+		}
+
+		static public bool IsUnix
+		{
+			get
+			{
+				return((Platform_Id == PlatformID.Unix));
+			}
+		}
+
+		static public bool IsOsx
+		{
+			get
+			{
+				return((Platform_Id == PlatformID.MacOSX));
 			}
 		}
 
@@ -58,6 +103,11 @@ namespace eInvoiceFreelance
 			bool created;
 			string process_name;
 
+			Operating_System = Environment.OSVersion;
+			Platform_Id      = Operating_System.Platform;
+
+			Console.WriteLine(Platform_Id.ToString());
+
 			process_name = System.IO.Directory.GetCurrentDirectory() + " - " + Application.ProductName;
 			process_name = process_name.Replace("\\", "");
 			process_name = process_name.Replace(".", "");
@@ -65,9 +115,9 @@ namespace eInvoiceFreelance
 
 			Assembly assembly = Assembly.GetExecutingAssembly();
 			FileVersionInfo fvi = FileVersionInfo.GetVersionInfo(assembly.Location);
-			_Version = fvi.FileVersion;
-			_Name = fvi.ProductName;
-			_Path = System.IO.Path.GetDirectoryName(fvi.FileName) + "\\";
+			Software_Version = fvi.FileVersion;
+			Software_Name = fvi.ProductName;
+			Exe_Path = System.IO.Path.GetDirectoryName(fvi.FileName) + "\\";
 
 			created = true;
 			using (Mutex mutex = new Mutex(true, process_name, out created))
@@ -96,9 +146,9 @@ namespace eInvoiceFreelance
 			Application.EnableVisualStyles();
 			Application.SetCompatibleTextRenderingDefault(false);
 
-			_MainForm = new MainForm();
-			Application.Run(_MainForm);
-			_MainForm = null;
+			Main_Form = new MainForm();
+			Application.Run(Main_Form);
+			Main_Form = null;
 		}
 	}
 }

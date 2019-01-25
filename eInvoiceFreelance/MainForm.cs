@@ -212,6 +212,10 @@ namespace eInvoiceFreelance
 			InvoiceGridView.Columns[(int)INVOICE_GRID_VIEW_COLUMN_ID.UNIT_PRICE_ID].ValueType  = typeof(string);
 			InvoiceGridView.Columns[(int)INVOICE_GRID_VIEW_COLUMN_ID.TOTAL_PRICE_ID].ValueType = typeof(string);
 			InvoiceGridView.Columns[(int)INVOICE_GRID_VIEW_COLUMN_ID.REIMBOURSE_ID].ValueType  = typeof(bool);
+			if (App.IsUnix)
+			{
+				InvoiceGridView.Columns[(int)INVOICE_GRID_VIEW_COLUMN_ID.REIMBOURSE_ID].ReadOnly = true;
+			}
 			InvoiceGridView.Columns[(int)INVOICE_GRID_VIEW_COLUMN_ID.VAT_ID].ValueType         = typeof(decimal);
 
 			SummaryValue.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
@@ -289,7 +293,7 @@ namespace eInvoiceFreelance
 
 		private void SummariesGridView_SelectionChanged(object sender, EventArgs e)
 		{
-			 SummariesGridView.ClearSelection();
+			SummariesGridView.ClearSelection();
 		}
 
 		private void InvoiceDataGridViewRowAdd(object[] row)
@@ -601,7 +605,7 @@ namespace eInvoiceFreelance
 
 		private void InvoiceGridView_RowsAdded(object sender, DataGridViewRowsAddedEventArgs e)
 		{
-			try 
+			try
 			{
 				UpdateSummaryDataGridView();
 				UpdateSaveButton();
@@ -613,7 +617,7 @@ namespace eInvoiceFreelance
 
 		private void InvoiceGridView_RowsRemoved(object sender, DataGridViewRowsRemovedEventArgs e)
 		{
-			try 
+			try
 			{
 				Activity_List.RemoveAt(e.RowIndex);
 				UpdateSummaryDataGridView();
@@ -639,12 +643,16 @@ namespace eInvoiceFreelance
 		{
 			try
 			{
-				if (e.ColumnIndex != (int)INVOICE_GRID_VIEW_COLUMN_ID.REIMBOURSE_ID)
+				if (App.IsWindows)
 				{
-					InvoiceGridView.ClearSelection();
-					InvoiceGridView.Rows[e.RowIndex].Selected = true;
-
-					InvoiceGridView.BeginEdit(true);
+					if (e.ColumnIndex != (int)INVOICE_GRID_VIEW_COLUMN_ID.REIMBOURSE_ID)
+					{
+						InvoiceGridView.Update();
+						InvoiceGridView.BeginEdit(true);
+					}
+				}
+				else if (App.IsUnix)
+				{
 				}
 			}
 			catch
@@ -656,17 +664,39 @@ namespace eInvoiceFreelance
 		{
 			try
 			{
-				if (e.ColumnIndex == (int)INVOICE_GRID_VIEW_COLUMN_ID.REIMBOURSE_ID)
+				if (App.IsWindows)
 				{
-					InvoiceGridView.ClearSelection();
-					InvoiceGridView.Rows[e.RowIndex].Selected = true;
-
-					DataGridViewCheckBoxCell a = (DataGridViewCheckBoxCell)InvoiceGridView.Rows[e.RowIndex].Cells[e.ColumnIndex];
-					a.Value = !((bool)a.Value);
+					if (e.ColumnIndex == (int)INVOICE_GRID_VIEW_COLUMN_ID.REIMBOURSE_ID)
+					{
+						InvoiceGridView.Update();
+						InvoiceGridView.BeginEdit(true);
+					}
+				}
+				else if (App.IsUnix)
+				{
 				}
 			}
 			catch
 			{
+			}
+		}
+
+		private void InvoiceGridView_CellContentClick(object sender, DataGridViewCellEventArgs e)
+		{
+			DataGridViewCheckBoxCell check_box;
+
+			if (App.IsWindows)
+			{
+			}
+			else if (App.IsUnix)
+			{
+				if (e.ColumnIndex == (int)INVOICE_GRID_VIEW_COLUMN_ID.REIMBOURSE_ID)
+				{
+					check_box = (DataGridViewCheckBoxCell)InvoiceGridView.Rows[e.RowIndex].Cells[e.ColumnIndex];
+					check_box.Value = !((bool)check_box.Value); 
+
+					InvoiceGridView.Update();
+				}
 			}
 		}
 
@@ -687,6 +717,7 @@ namespace eInvoiceFreelance
 			int                         row_id;
 			INVOICE_GRID_VIEW_COLUMN_ID col_id;
 			DataGridViewRow             row;
+			bool                        go_to_news_cell;
 
 			row_id = e.RowIndex;
 			col_id = (INVOICE_GRID_VIEW_COLUMN_ID)e.ColumnIndex;
@@ -739,10 +770,14 @@ namespace eInvoiceFreelance
 				UpdateValueBackColor(INVOICE_GRID_VIEW_COLUMN_ID.QUANTITY_ID, row);
 			}
 
+			InvoiceGridView.Update();
+
 			try
-			{
-				if (!InvoiceGridView.EditCancelled)
+			{	
+				if (InvoiceGridView.EnterTabPressed)
 				{
+					go_to_news_cell = true;
+
 					switch (col_id)
 					{
 						case INVOICE_GRID_VIEW_COLUMN_ID.DESCRIPTION_ID:
@@ -765,15 +800,23 @@ namespace eInvoiceFreelance
 							}
 							break;
 
-						default:
+						case INVOICE_GRID_VIEW_COLUMN_ID.TOTAL_PRICE_ID:
 							row_id++;
 							col_id = INVOICE_GRID_VIEW_COLUMN_ID.DESCRIPTION_ID;
 							break;
+
+						default:
+							go_to_news_cell = false;
+							break;
+
 					}
 
-					if (row_id < InvoiceGridView.RowCount)
+					if (go_to_news_cell && (row_id < InvoiceGridView.RowCount))
 					{
+						InvoiceGridView.ClearSelection();
+						InvoiceGridView.Rows[row_id].Selected = true;
 						InvoiceGridView.CurrentCell = InvoiceGridView.Rows[row_id].Cells[(int)col_id];
+
 						InvoiceGridView.BeginEdit(true);
 					}
 				}
@@ -1107,7 +1150,7 @@ namespace eInvoiceFreelance
 			invoice.FatturaElettronicaBody[0].DatiPagamento[0].DettaglioPagamento[0].ABI = Bank_Account.abi;
 			invoice.FatturaElettronicaBody[0].DatiPagamento[0].DettaglioPagamento[0].CAB = Bank_Account.cab;
 			invoice.FatturaElettronicaBody[0].DatiPagamento[0].DettaglioPagamento[0].BIC = Bank_Account.bic;
-			
+
 			invoice_serializer = new XmlSerializer(typeof(FatturaElettronicaType));
 
 			writer = new StreamWriter(result.file_name);

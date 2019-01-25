@@ -7,33 +7,36 @@ using System.Windows.Forms;
 
 public class DataGridViewEx : DataGridView
 {
-	private bool Edit_Cancelled;
-
-	public bool EditCancelled
+	private bool Enter_Tab_Pressed;
+	public bool EnterTabPressed
 	{
 		get
 		{
-			return (Edit_Cancelled);
+			return (Enter_Tab_Pressed);
 		}
 		set
 		{
-			Edit_Cancelled = value;
+			Enter_Tab_Pressed = value;
 		}
+	}
+
+	protected override void OnMouseDown(MouseEventArgs e)
+	{
+		EnterTabPressed = false;
+
+		base.OnMouseDown(e);
 	}
 
 	protected override bool ProcessCmdKey(ref Message msg, Keys key_data)
 	{
+		Enter_Tab_Pressed = false;
 		if ((key_data == Keys.Enter) || (key_data == Keys.Tab))
 		{
-			Edit_Cancelled = false;
+			Enter_Tab_Pressed = true;
 
 			EndEdit();
 
 			return (true);
-		}
-		else if (key_data == Keys.Escape)
-		{
-			Edit_Cancelled = true;
 		}
 
 		return (base.ProcessCmdKey(ref msg, key_data));

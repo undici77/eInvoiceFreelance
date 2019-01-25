@@ -259,9 +259,9 @@
 			dataGridViewCellStyle10.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
 			dataGridViewCellStyle10.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
 			this.InvoiceGridView.DefaultCellStyle = dataGridViewCellStyle10;
-			this.InvoiceGridView.EditCancelled = false;
 			this.InvoiceGridView.EditMode = System.Windows.Forms.DataGridViewEditMode.EditProgrammatically;
 			this.InvoiceGridView.EnableHeadersVisualStyles = false;
+			this.InvoiceGridView.EnterTabPressed = false;
 			this.InvoiceGridView.Location = new System.Drawing.Point(3, 3);
 			this.InvoiceGridView.Name = "InvoiceGridView";
 			dataGridViewCellStyle11.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
@@ -280,6 +280,7 @@
 			this.InvoiceGridView.ShowRowErrors = false;
 			this.InvoiceGridView.Size = new System.Drawing.Size(1054, 240);
 			this.InvoiceGridView.TabIndex = 0;
+			this.InvoiceGridView.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.InvoiceGridView_CellContentClick);
 			this.InvoiceGridView.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.InvoiceGridView_CellDoubleClick);
 			this.InvoiceGridView.CellEndEdit += new System.Windows.Forms.DataGridViewCellEventHandler(this.InvoiceGridView_CellEndEdit);
 			this.InvoiceGridView.CellFormatting += new System.Windows.Forms.DataGridViewCellFormattingEventHandler(this.InvoiceGridView_CellFormatting);
@@ -339,7 +340,6 @@
 			this.InvoiceReimbursement.HeaderText = "Cont. Prev.";
 			this.InvoiceReimbursement.MinimumWidth = 60;
 			this.InvoiceReimbursement.Name = "InvoiceReimbursement";
-			this.InvoiceReimbursement.ReadOnly = true;
 			// 
 			// InvoiceVat
 			// 
