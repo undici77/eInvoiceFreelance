@@ -693,7 +693,7 @@ namespace eInvoiceFreelance
 				if (e.ColumnIndex == (int)INVOICE_GRID_VIEW_COLUMN_ID.REIMBOURSE_ID)
 				{
 					check_box = (DataGridViewCheckBoxCell)InvoiceGridView.Rows[e.RowIndex].Cells[e.ColumnIndex];
-					check_box.Value = !((bool)check_box.Value); 
+					check_box.Value = !((bool)check_box.Value);
 
 					InvoiceGridView.Update();
 				}
@@ -773,7 +773,7 @@ namespace eInvoiceFreelance
 			InvoiceGridView.Update();
 
 			try
-			{	
+			{
 				if (InvoiceGridView.EnterTabPressed)
 				{
 					go_to_news_cell = true;
@@ -1088,6 +1088,8 @@ namespace eInvoiceFreelance
 			InformationForm                      info_form;
 			InformationForm.RESULT               result;
 			StreamWriter                         writer;
+			string                               file_name;
+			SaveFileDialog                       save_file_dialog;
 
 			try
 			{
@@ -1112,7 +1114,7 @@ namespace eInvoiceFreelance
 				return;
 			}
 
-			info_form = new InformationForm(Save_Directory);
+			info_form = new InformationForm();
 			info_form.ShowDialog(this);
 			result = info_form.GetResult();
 
@@ -1121,7 +1123,22 @@ namespace eInvoiceFreelance
 				return;
 			}
 
-			Save_Directory = Path.GetDirectoryName(result.file_name);
+			file_name = result.number.ToString("000000") + "-" + result.customer_name + "-" + result.date_time.ToString("yyyyMMdd");
+
+			save_file_dialog = new SaveFileDialog();
+			save_file_dialog.InitialDirectory = Save_Directory;
+			save_file_dialog.FileName = file_name;
+			save_file_dialog.Filter = "xml files (*.xml) | *.xml";
+			save_file_dialog.Title = "Salvataggio file generato";
+
+			if (save_file_dialog.ShowDialog() != DialogResult.OK)
+			{
+				return;
+			}
+
+			file_name = save_file_dialog.FileName;
+
+			Save_Directory = Path.GetDirectoryName(file_name);
 			Ini_File.SetKeyValue("Conf", "SaveDirectory", Save_Directory);
 
 			Ini_File.Save(App.Name + ".ini");
@@ -1153,7 +1170,7 @@ namespace eInvoiceFreelance
 
 			invoice_serializer = new XmlSerializer(typeof(FatturaElettronicaType));
 
-			writer = new StreamWriter(result.file_name);
+			writer = new StreamWriter(file_name);
 
 			name_space = new XmlSerializerNamespaces();
 			name_space.Add("ns2", "http://ivaservizi.agenziaentrate.gov.it/docs/xsd/fatture/v1.2");

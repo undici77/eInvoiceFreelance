@@ -74,10 +74,10 @@ namespace eInvoiceFreelance
 		{
 			get
 			{
-				return((Platform_Id == PlatformID.Win32NT)      ||
-				       (Platform_Id == PlatformID.Win32S)       ||
-				       (Platform_Id == PlatformID.Win32Windows) ||
-				       (Platform_Id == PlatformID.WinCE));
+				return ((Platform_Id == PlatformID.Win32NT)      ||
+				        (Platform_Id == PlatformID.Win32S)       ||
+				        (Platform_Id == PlatformID.Win32Windows) ||
+				        (Platform_Id == PlatformID.WinCE));
 			}
 		}
 
@@ -85,7 +85,7 @@ namespace eInvoiceFreelance
 		{
 			get
 			{
-				return((Platform_Id == PlatformID.Unix));
+				return ((Platform_Id == PlatformID.Unix));
 			}
 		}
 
@@ -93,7 +93,7 @@ namespace eInvoiceFreelance
 		{
 			get
 			{
-				return((Platform_Id == PlatformID.MacOSX));
+				return ((Platform_Id == PlatformID.MacOSX));
 			}
 		}
 

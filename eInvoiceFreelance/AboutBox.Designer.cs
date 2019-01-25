@@ -42,9 +42,9 @@
 			((System.ComponentModel.ISupportInitialize)(this.LogoPictureBox)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.DonatePictureBox)).BeginInit();
 			this.SuspendLayout();
-			// 
+			//
 			// OkButton
-			// 
+			//
 			this.OkButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.OkButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
 			this.OkButton.Location = new System.Drawing.Point(357, 330);
@@ -53,9 +53,9 @@
 			this.OkButton.TabIndex = 24;
 			this.OkButton.Text = "&OK";
 			this.OkButton.Click += new System.EventHandler(this.OkButton_Click);
-			// 
+			//
 			// CompanyNameLabel
-			// 
+			//
 			this.CompanyNameLabel.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.CompanyNameLabel.Location = new System.Drawing.Point(149, 105);
 			this.CompanyNameLabel.Margin = new System.Windows.Forms.Padding(6, 0, 3, 0);
@@ -65,9 +65,9 @@
 			this.CompanyNameLabel.TabIndex = 22;
 			this.CompanyNameLabel.Text = "Company Name";
 			this.CompanyNameLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-			// 
+			//
 			// CopyrightLabel
-			// 
+			//
 			this.CopyrightLabel.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.CopyrightLabel.Location = new System.Drawing.Point(149, 70);
 			this.CopyrightLabel.Margin = new System.Windows.Forms.Padding(6, 0, 3, 0);
@@ -77,9 +77,9 @@
 			this.CopyrightLabel.TabIndex = 21;
 			this.CopyrightLabel.Text = "Copyright";
 			this.CopyrightLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-			// 
+			//
 			// VersionLabel
-			// 
+			//
 			this.VersionLabel.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.VersionLabel.Location = new System.Drawing.Point(149, 35);
 			this.VersionLabel.Margin = new System.Windows.Forms.Padding(6, 0, 3, 0);
@@ -89,9 +89,9 @@
 			this.VersionLabel.TabIndex = 0;
 			this.VersionLabel.Text = "Version";
 			this.VersionLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-			// 
+			//
 			// ProductNameLabel
-			// 
+			//
 			this.ProductNameLabel.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.ProductNameLabel.Location = new System.Drawing.Point(149, 0);
 			this.ProductNameLabel.Margin = new System.Windows.Forms.Padding(6, 0, 3, 0);
@@ -101,12 +101,12 @@
 			this.ProductNameLabel.TabIndex = 19;
 			this.ProductNameLabel.Text = "Product Name";
 			this.ProductNameLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-			// 
+			//
 			// TableLayoutPanel
-			// 
-			this.TableLayoutPanel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+			//
+			this.TableLayoutPanel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+			                                                                      | System.Windows.Forms.AnchorStyles.Left)
+			                                                                     | System.Windows.Forms.AnchorStyles.Right)));
 			this.TableLayoutPanel.ColumnCount = 3;
 			this.TableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33F));
 			this.TableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33F));
@@ -137,12 +137,12 @@
 			this.TableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
 			this.TableLayoutPanel.Size = new System.Drawing.Size(435, 356);
 			this.TableLayoutPanel.TabIndex = 0;
-			// 
+			//
 			// LogoPictureBox
-			// 
-			this.LogoPictureBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+			//
+			this.LogoPictureBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+			                                                                    | System.Windows.Forms.AnchorStyles.Left)
+			                                                                   | System.Windows.Forms.AnchorStyles.Right)));
 			this.LogoPictureBox.Image = ((System.Drawing.Image)(resources.GetObject("LogoPictureBox.Image")));
 			this.LogoPictureBox.Location = new System.Drawing.Point(3, 3);
 			this.LogoPictureBox.Name = "LogoPictureBox";
@@ -151,9 +151,9 @@
 			this.LogoPictureBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
 			this.LogoPictureBox.TabIndex = 12;
 			this.LogoPictureBox.TabStop = false;
-			// 
+			//
 			// BoxDescriptionText
-			// 
+			//
 			this.TableLayoutPanel.SetColumnSpan(this.BoxDescriptionText, 3);
 			this.BoxDescriptionText.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.BoxDescriptionText.Location = new System.Drawing.Point(6, 143);
@@ -165,9 +165,9 @@
 			this.BoxDescriptionText.TabStop = false;
 			this.BoxDescriptionText.Text = "Description";
 			this.BoxDescriptionText.VScroll += new System.EventHandler(this.BoxDescriptionText_VScroll);
-			// 
+			//
 			// OkCheckBox
-			// 
+			//
 			this.OkCheckBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.OkCheckBox.AutoSize = true;
 			this.OkCheckBox.Location = new System.Drawing.Point(3, 336);
@@ -177,12 +177,12 @@
 			this.OkCheckBox.Text = "Ho capito";
 			this.OkCheckBox.UseVisualStyleBackColor = true;
 			this.OkCheckBox.CheckedChanged += new System.EventHandler(this.OkCheckBox_CheckedChanged);
-			// 
+			//
 			// DonatePictureBox
-			// 
-			this.DonatePictureBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+			//
+			this.DonatePictureBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+			                                                                      | System.Windows.Forms.AnchorStyles.Left)
+			                                                                     | System.Windows.Forms.AnchorStyles.Right)));
 			this.DonatePictureBox.Cursor = System.Windows.Forms.Cursors.Hand;
 			this.DonatePictureBox.Image = ((System.Drawing.Image)(resources.GetObject("DonatePictureBox.Image")));
 			this.DonatePictureBox.Location = new System.Drawing.Point(289, 3);
@@ -193,9 +193,9 @@
 			this.DonatePictureBox.TabIndex = 26;
 			this.DonatePictureBox.TabStop = false;
 			this.DonatePictureBox.Click += new System.EventHandler(this.DonatePictureBox_Click);
-			// 
+			//
 			// AboutBox
-			// 
+			//
 			this.AcceptButton = this.OkButton;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
