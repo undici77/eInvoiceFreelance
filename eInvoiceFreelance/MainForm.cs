@@ -276,6 +276,8 @@ namespace eInvoiceFreelance
 					Application.Exit();
 					return;
 				}
+
+				System.Diagnostics.Process.Start("http://einvoicefreelance.altervista.org");
 			}
 
 			Ini_File.Save(App.Name + ".ini");

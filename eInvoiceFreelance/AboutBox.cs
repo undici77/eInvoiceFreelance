@@ -44,7 +44,7 @@ namespace eInvoiceFreelance
 			}
 			else
 			{
-				OkCheckBox.Enabled = false;
+				OkCheckBox.Enabled = true;
 				OkCheckBox.Checked = false;
 			}
 		}
@@ -169,9 +169,9 @@ namespace eInvoiceFreelance
 		{
 		}
 
-		private void BoxDescriptionText_VScroll(object sender, EventArgs e)
+		private void AboutLinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
 		{
-			OkCheckBox.Enabled = true;
+			System.Diagnostics.Process.Start("http://einvoicefreelance.altervista.org");
 		}
 	}
 }

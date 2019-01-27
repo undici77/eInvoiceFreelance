@@ -14,7 +14,7 @@ Name: "{app}"; Permissions: everyone-full
 AppName={#ApplicationName}
 AppVersion={#ApplicationVersion}
 AppVerName={#ApplicationName} {#ApplicationVersion}
-OutputBaseFilename={#ApplicationName}Setup_{#ApplicationVersion}
+OutputBaseFilename={#ApplicationName}_Win_Setup_{#ApplicationVersion}
 AppPublisher=Undici77
 AppPublisherURL=https://github.com/undici77/eInvoiceFreelance
 DefaultDirName={pf}\{#ApplicationName}
