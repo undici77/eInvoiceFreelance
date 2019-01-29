@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=eInvoiceFreelance
+Comment=Free opensource e-Invoice
+Exec=/usr/bin/eInvoiceFreelance
+Icon=/usr/share/pixmaps/eInvoiceFreelance.png
+Terminal=false
+Type=Application
+Categories=GNOME;Utility

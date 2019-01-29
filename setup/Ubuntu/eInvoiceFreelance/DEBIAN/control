@@ -1,0 +1,7 @@
+Package: eInvoiceFreelance
+Version: 1.0.0.1
+Maintainer: Alessandro Barbieri
+Architecture: all
+Description: eInvoice for Freelance
+Depends: mono-complete (>= 5.0.0)
+
