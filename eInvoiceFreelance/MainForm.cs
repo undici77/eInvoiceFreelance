@@ -180,7 +180,18 @@ namespace eInvoiceFreelance
 			Template_File_Name = Ini_File.GetKeyValue("Conf", "Template");
 			if (string.IsNullOrEmpty(Template_File_Name))
 			{
-				Template_File_Name = "Template.xml";
+				if (App.IsWindows)
+				{
+					Template_File_Name = App.Path + "Template.xml";
+				}
+				else if (App.IsUnix)
+				{						  
+					Template_File_Name = "/opt/eInvoiceFreelance/Template.xml";
+				}
+				else
+				{
+					Template_File_Name = "Template.xml";
+				}
 			}
 
 			if (!File.Exists(Template_File_Name))
@@ -1000,51 +1011,59 @@ namespace eInvoiceFreelance
 			}
 			catch
 			{
-				MessageBox.Show("Impossibile caricare e deserializzare" + file_name, "Errore", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				MessageBox.Show("Impossibile caricare e deserializzare " + file_name, "Errore", MessageBoxButtons.OK, MessageBoxIcon.Error);
 				return;
 			}
 
 			InvoiceGridView.Rows.Clear();
 			Activity_List.Clear();
 
-			Vat = invoice.FatturaElettronicaBody[0].DatiBeniServizi.DatiRiepilogo[0].AliquotaIVA;
-
-			lines_number = invoice.FatturaElettronicaBody[0].DatiBeniServizi.DettaglioLinee.Length;
-
-			id = 0;
-			line = null;
-			field = null;
-			while (id < lines_number)
+			try
 			{
-				if (line == null)
+				Vat = invoice.FatturaElettronicaBody[0].DatiBeniServizi.DatiRiepilogo[0].AliquotaIVA;
+
+				lines_number = invoice.FatturaElettronicaBody[0].DatiBeniServizi.DettaglioLinee.Length;
+
+				id = 0;
+				line = null;
+				field = null;
+				while (id < lines_number)
 				{
-					line = invoice.FatturaElettronicaBody[0].DatiBeniServizi.DettaglioLinee[id];
-					id++;
+					if (line == null)
+					{
+						line = invoice.FatturaElettronicaBody[0].DatiBeniServizi.DettaglioLinee[id];
+						id++;
+					}
+
+					if (line.Descrizione.Contains(Reimbursment_String) && (field != null))
+					{
+						InvoiceDataGridViewRowAdd(field.Descrizione, field.Quantita, field.PrezzoUnitario, field.PrezzoTotale, true);
+						field = null;
+						line = null;
+					}
+					else if (field == null)
+					{
+						field = line;
+						line = null;
+					}
+					else
+					{
+						InvoiceDataGridViewRowAdd(field.Descrizione, field.Quantita, field.PrezzoUnitario, field.PrezzoTotale, false);
+						field = null;
+					}
 				}
 
-				if (line.Descrizione.Contains(Reimbursment_String) && (field != null))
-				{
-					InvoiceDataGridViewRowAdd(field.Descrizione, field.Quantita, field.PrezzoUnitario, field.PrezzoTotale, true);
-					field = null;
-					line = null;
-				}
-				else if (field == null)
-				{
-					field = line;
-					line = null;
-				}
-				else
+				if (field != null)
 				{
 					InvoiceDataGridViewRowAdd(field.Descrizione, field.Quantita, field.PrezzoUnitario, field.PrezzoTotale, false);
 					field = null;
+					line = null;
 				}
 			}
-
-			if (field != null)
+			catch
 			{
-				InvoiceDataGridViewRowAdd(field.Descrizione, field.Quantita, field.PrezzoUnitario, field.PrezzoTotale, false);
-				field = null;
-				line = null;
+				MessageBox.Show("Impossibile elaborare " + file_name, "Errore", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				return;
 			}
 		}
 
@@ -1112,7 +1131,7 @@ namespace eInvoiceFreelance
 			}
 			catch
 			{
-				MessageBox.Show("Impossibile caricare e deserializzare" + Template_File_Name, "Errore", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				MessageBox.Show("Impossibile caricare e deserializzare " + Template_File_Name, "Errore", MessageBoxButtons.OK, MessageBoxIcon.Error);
 				return;
 			}
 

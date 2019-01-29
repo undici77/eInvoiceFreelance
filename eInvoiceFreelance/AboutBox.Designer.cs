@@ -62,7 +62,7 @@
 			this.CompanyNameLabel.Margin = new System.Windows.Forms.Padding(6, 0, 3, 0);
 			this.CompanyNameLabel.MaximumSize = new System.Drawing.Size(0, 17);
 			this.CompanyNameLabel.Name = "CompanyNameLabel";
-			this.CompanyNameLabel.Size = new System.Drawing.Size(202, 17);
+			this.CompanyNameLabel.Size = new System.Drawing.Size(203, 17);
 			this.CompanyNameLabel.TabIndex = 22;
 			this.CompanyNameLabel.Text = "Company Name";
 			this.CompanyNameLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -74,7 +74,7 @@
 			this.CopyrightLabel.Margin = new System.Windows.Forms.Padding(6, 0, 3, 0);
 			this.CopyrightLabel.MaximumSize = new System.Drawing.Size(0, 17);
 			this.CopyrightLabel.Name = "CopyrightLabel";
-			this.CopyrightLabel.Size = new System.Drawing.Size(202, 17);
+			this.CopyrightLabel.Size = new System.Drawing.Size(203, 17);
 			this.CopyrightLabel.TabIndex = 21;
 			this.CopyrightLabel.Text = "Copyright";
 			this.CopyrightLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -86,7 +86,7 @@
 			this.VersionLabel.Margin = new System.Windows.Forms.Padding(6, 0, 3, 0);
 			this.VersionLabel.MaximumSize = new System.Drawing.Size(0, 17);
 			this.VersionLabel.Name = "VersionLabel";
-			this.VersionLabel.Size = new System.Drawing.Size(202, 17);
+			this.VersionLabel.Size = new System.Drawing.Size(203, 17);
 			this.VersionLabel.TabIndex = 0;
 			this.VersionLabel.Text = "Version";
 			this.VersionLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -98,7 +98,7 @@
 			this.ProductNameLabel.Margin = new System.Windows.Forms.Padding(6, 0, 3, 0);
 			this.ProductNameLabel.MaximumSize = new System.Drawing.Size(0, 17);
 			this.ProductNameLabel.Name = "ProductNameLabel";
-			this.ProductNameLabel.Size = new System.Drawing.Size(202, 17);
+			this.ProductNameLabel.Size = new System.Drawing.Size(203, 17);
 			this.ProductNameLabel.TabIndex = 19;
 			this.ProductNameLabel.Text = "Product Name";
 			this.ProductNameLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -180,10 +180,10 @@
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.DonatePictureBox.Cursor = System.Windows.Forms.Cursors.Hand;
 			this.DonatePictureBox.Image = ((System.Drawing.Image)(resources.GetObject("DonatePictureBox.Image")));
-			this.DonatePictureBox.Location = new System.Drawing.Point(408, 3);
+			this.DonatePictureBox.Location = new System.Drawing.Point(409, 3);
 			this.DonatePictureBox.Name = "DonatePictureBox";
 			this.TableLayoutPanel.SetRowSpan(this.DonatePictureBox, 4);
-			this.DonatePictureBox.Size = new System.Drawing.Size(172, 134);
+			this.DonatePictureBox.Size = new System.Drawing.Size(171, 134);
 			this.DonatePictureBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
 			this.DonatePictureBox.TabIndex = 26;
 			this.DonatePictureBox.TabStop = false;
@@ -196,7 +196,7 @@
 			this.AboutLinkLabel.AutoSize = true;
 			this.AboutLinkLabel.Location = new System.Drawing.Point(197, 343);
 			this.AboutLinkLabel.Name = "AboutLinkLabel";
-			this.AboutLinkLabel.Size = new System.Drawing.Size(205, 13);
+			this.AboutLinkLabel.Size = new System.Drawing.Size(206, 13);
 			this.AboutLinkLabel.TabIndex = 27;
 			this.AboutLinkLabel.TabStop = true;
 			this.AboutLinkLabel.Text = "http://einvoicefreelance.altervista.org";

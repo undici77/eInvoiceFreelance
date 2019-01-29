@@ -1,11 +1,11 @@
 #define ApplicationName 'eInvoiceFreelance'
 #define ApplicationFile 'eInvoiceFreelance.exe'
-#define ApplicationVersion GetStringFileInfo('..\eInvoiceFreelance\bin\Release\eInvoiceFreelance.exe', PRODUCT_VERSION)
+#define ApplicationVersion GetStringFileInfo('..\..\eInvoiceFreelance\bin\Release\eInvoiceFreelance.exe', PRODUCT_VERSION)
 
 [Files]
 ; Applicazione
-Source: "..\eInvoiceFreelance\bin\Release\{#ApplicationFile}"; DestDir: {app}; Flags: ignoreversion replacesameversion replacesameversion restartreplace; Permissions: everyone-full
-Source: "..\eInvoiceFreelance\bin\Release\Template.xml"; DestDir: {app}; Flags: ignoreversion recursesubdirs createallsubdirs onlyifdoesntexist; Permissions: everyone-full
+Source: "..\..\eInvoiceFreelance\bin\Release\{#ApplicationFile}"; DestDir: {app}; Flags: ignoreversion replacesameversion replacesameversion restartreplace; Permissions: everyone-full
+Source: "..\..\eInvoiceFreelance\bin\Release\Template.xml"; DestDir: {app}; Flags: ignoreversion recursesubdirs createallsubdirs onlyifdoesntexist; Permissions: everyone-full
 
 [Dirs]
 Name: "{app}"; Permissions: everyone-full
@@ -24,9 +24,9 @@ SolidCompression=yes
 MinVersion=6.1.7600
 PrivilegesRequired=admin
 AppCopyright=Copyright (C) 2019 Undici77
-SetupIconFile=..\eInvoiceFreelance\res\eInvoiceFreelance.ico
+SetupIconFile=..\..\eInvoiceFreelance\res\eInvoiceFreelance.ico
 UninstallDisplayIcon=yes
-UninstallIconFile==..\eInvoiceFreelance\res\eInvoiceFreelance.ico
+UninstallIconFile==..\..\eInvoiceFreelance\res\eInvoiceFreelance.ico
 OutputDir=output\{#ApplicationVersion}
 LicenseFile=license\license.rtf
 
