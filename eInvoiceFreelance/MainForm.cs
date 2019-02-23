@@ -495,6 +495,9 @@ namespace eInvoiceFreelance
 					}
 					break;
 
+				case INVOICE_GRID_VIEW_COLUMN_ID.REIMBOURSE_ID:
+					break;
+
 				case INVOICE_GRID_VIEW_COLUMN_ID.VAT_ID:
 					if (ValidateVatCell(row))
 					{

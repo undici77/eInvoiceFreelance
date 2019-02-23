@@ -22,10 +22,10 @@ Global
 		{AF773526-067D-4C75-97CF-4FA6B9D26166}.Debug_woDrawing|Any CPU.Build.0 = Debug|Any CPU
 		{AF773526-067D-4C75-97CF-4FA6B9D26166}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{AF773526-067D-4C75-97CF-4FA6B9D26166}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{AF773526-067D-4C75-97CF-4FA6B9D26166}.Release_woDrawing|Any CPU.ActiveCfg = ReleaseWindows|Any CPU
-		{AF773526-067D-4C75-97CF-4FA6B9D26166}.Release_woDrawing|Any CPU.Build.0 = ReleaseWindows|Any CPU
-		{AF773526-067D-4C75-97CF-4FA6B9D26166}.Release|Any CPU.ActiveCfg = ReleaseWindows|Any CPU
-		{AF773526-067D-4C75-97CF-4FA6B9D26166}.Release|Any CPU.Build.0 = ReleaseWindows|Any CPU
+		{AF773526-067D-4C75-97CF-4FA6B9D26166}.Release_woDrawing|Any CPU.ActiveCfg = Release|Any CPU
+		{AF773526-067D-4C75-97CF-4FA6B9D26166}.Release_woDrawing|Any CPU.Build.0 = Release|Any CPU
+		{AF773526-067D-4C75-97CF-4FA6B9D26166}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AF773526-067D-4C75-97CF-4FA6B9D26166}.Release|Any CPU.Build.0 = Release|Any CPU
 		{84C4FDD9-3ED7-453B-B9DA-B3ED52CB071C}.Debug_woDrawing|Any CPU.ActiveCfg = Debug_woDrawing|Any CPU
 		{84C4FDD9-3ED7-453B-B9DA-B3ED52CB071C}.Debug_woDrawing|Any CPU.Build.0 = Debug_woDrawing|Any CPU
 		{84C4FDD9-3ED7-453B-B9DA-B3ED52CB071C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
