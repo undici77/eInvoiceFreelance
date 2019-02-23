@@ -15,8 +15,7 @@ Global
 		Debug_woDrawing|Any CPU = Debug_woDrawing|Any CPU
 		Debug|Any CPU = Debug|Any CPU
 		Release_woDrawing|Any CPU = Release_woDrawing|Any CPU
-		ReleaseUbuntu|Any CPU = ReleaseUbuntu|Any CPU
-		ReleaseWindows|Any CPU = ReleaseWindows|Any CPU
+		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{AF773526-067D-4C75-97CF-4FA6B9D26166}.Debug_woDrawing|Any CPU.ActiveCfg = Debug|Any CPU
@@ -25,20 +24,16 @@ Global
 		{AF773526-067D-4C75-97CF-4FA6B9D26166}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AF773526-067D-4C75-97CF-4FA6B9D26166}.Release_woDrawing|Any CPU.ActiveCfg = ReleaseWindows|Any CPU
 		{AF773526-067D-4C75-97CF-4FA6B9D26166}.Release_woDrawing|Any CPU.Build.0 = ReleaseWindows|Any CPU
-		{AF773526-067D-4C75-97CF-4FA6B9D26166}.ReleaseUbuntu|Any CPU.ActiveCfg = ReleaseUbuntu|Any CPU
-		{AF773526-067D-4C75-97CF-4FA6B9D26166}.ReleaseUbuntu|Any CPU.Build.0 = ReleaseUbuntu|Any CPU
-		{AF773526-067D-4C75-97CF-4FA6B9D26166}.ReleaseWindows|Any CPU.ActiveCfg = ReleaseWindows|Any CPU
-		{AF773526-067D-4C75-97CF-4FA6B9D26166}.ReleaseWindows|Any CPU.Build.0 = ReleaseWindows|Any CPU
-		{84C4FDD9-3ED7-453B-B9DA-B3ED52CB071C}.Debug_woDrawing|Any CPU.ActiveCfg = Debug|Any CPU
-		{84C4FDD9-3ED7-453B-B9DA-B3ED52CB071C}.Debug_woDrawing|Any CPU.Build.0 = Debug|Any CPU
+		{AF773526-067D-4C75-97CF-4FA6B9D26166}.Release|Any CPU.ActiveCfg = ReleaseWindows|Any CPU
+		{AF773526-067D-4C75-97CF-4FA6B9D26166}.Release|Any CPU.Build.0 = ReleaseWindows|Any CPU
+		{84C4FDD9-3ED7-453B-B9DA-B3ED52CB071C}.Debug_woDrawing|Any CPU.ActiveCfg = Debug_woDrawing|Any CPU
+		{84C4FDD9-3ED7-453B-B9DA-B3ED52CB071C}.Debug_woDrawing|Any CPU.Build.0 = Debug_woDrawing|Any CPU
 		{84C4FDD9-3ED7-453B-B9DA-B3ED52CB071C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{84C4FDD9-3ED7-453B-B9DA-B3ED52CB071C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{84C4FDD9-3ED7-453B-B9DA-B3ED52CB071C}.Release_woDrawing|Any CPU.ActiveCfg = Release_woDrawing|Any CPU
 		{84C4FDD9-3ED7-453B-B9DA-B3ED52CB071C}.Release_woDrawing|Any CPU.Build.0 = Release_woDrawing|Any CPU
-		{84C4FDD9-3ED7-453B-B9DA-B3ED52CB071C}.ReleaseUbuntu|Any CPU.ActiveCfg = Release_woDrawing|Any CPU
-		{84C4FDD9-3ED7-453B-B9DA-B3ED52CB071C}.ReleaseUbuntu|Any CPU.Build.0 = Release_woDrawing|Any CPU
-		{84C4FDD9-3ED7-453B-B9DA-B3ED52CB071C}.ReleaseWindows|Any CPU.ActiveCfg = Release_woDrawing|Any CPU
-		{84C4FDD9-3ED7-453B-B9DA-B3ED52CB071C}.ReleaseWindows|Any CPU.Build.0 = Release_woDrawing|Any CPU
+		{84C4FDD9-3ED7-453B-B9DA-B3ED52CB071C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{84C4FDD9-3ED7-453B-B9DA-B3ED52CB071C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
