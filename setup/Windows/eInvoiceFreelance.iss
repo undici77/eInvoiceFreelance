@@ -26,7 +26,6 @@ PrivilegesRequired=admin
 AppCopyright=Copyright (C) 2019 Undici77
 SetupIconFile=..\..\eInvoiceFreelance\res\eInvoiceFreelance.ico
 UninstallDisplayIcon=yes
-UninstallIconFile==..\..\eInvoiceFreelance\res\eInvoiceFreelance.ico
 OutputDir=output\{#ApplicationVersion}
 LicenseFile=license\license.rtf
 

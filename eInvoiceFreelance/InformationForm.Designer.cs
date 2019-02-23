@@ -140,36 +140,41 @@
 			// 
 			// NamelLabel
 			// 
-			this.NamelLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+			this.NamelLabel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Right)));
 			this.NamelLabel.AutoSize = true;
 			this.DataRequestTabelLayoutPanel.SetColumnSpan(this.NamelLabel, 2);
-			this.NamelLabel.Location = new System.Drawing.Point(3, 8);
+			this.NamelLabel.Location = new System.Drawing.Point(68, 0);
 			this.NamelLabel.Name = "NamelLabel";
-			this.NamelLabel.Size = new System.Drawing.Size(114, 18);
+			this.NamelLabel.RightToLeft = System.Windows.Forms.RightToLeft.No;
+			this.NamelLabel.Size = new System.Drawing.Size(49, 34);
 			this.NamelLabel.TabIndex = 6;
-			this.NamelLabel.Text = "Nome cliente";
+			this.NamelLabel.Text = "Nome";
+			this.NamelLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
 			// 
 			// NumberLabel
 			// 
-			this.NumberLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
 			this.NumberLabel.AutoSize = true;
 			this.DataRequestTabelLayoutPanel.SetColumnSpan(this.NumberLabel, 2);
-			this.NumberLabel.Location = new System.Drawing.Point(3, 42);
+			this.NumberLabel.Dock = System.Windows.Forms.DockStyle.Right;
+			this.NumberLabel.Location = new System.Drawing.Point(55, 34);
 			this.NumberLabel.Name = "NumberLabel";
-			this.NumberLabel.Size = new System.Drawing.Size(114, 18);
+			this.NumberLabel.Size = new System.Drawing.Size(62, 34);
 			this.NumberLabel.TabIndex = 7;
-			this.NumberLabel.Text = "Numero fattura";
+			this.NumberLabel.Text = "Numero";
+			this.NumberLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
 			// 
 			// label2
 			// 
-			this.label2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
 			this.label2.AutoSize = true;
 			this.DataRequestTabelLayoutPanel.SetColumnSpan(this.label2, 2);
-			this.label2.Location = new System.Drawing.Point(3, 76);
+			this.label2.Dock = System.Windows.Forms.DockStyle.Right;
+			this.label2.Location = new System.Drawing.Point(78, 68);
 			this.label2.Name = "label2";
-			this.label2.Size = new System.Drawing.Size(114, 18);
+			this.label2.Size = new System.Drawing.Size(39, 34);
 			this.label2.TabIndex = 8;
-			this.label2.Text = "Data fattura";
+			this.label2.Text = "Data";
+			this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
 			// 
 			// InformationForm
 			// 

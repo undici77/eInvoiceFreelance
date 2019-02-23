@@ -54,6 +54,10 @@
     <Compile Include="AboutBox.Designer.cs">
       <DependentUpon>AboutBox.cs</DependentUpon>
     </Compile>
+    <Compile Include="ActivityList.cs" />
+    <Compile Include="Errors.cs" />
+    <Compile Include="BankAccount.cs" />
+    <Compile Include="Customer.cs" />
     <Compile Include="DataGridViewEx.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -63,7 +67,7 @@
     <Compile Include="InformationForm.Designer.cs">
       <DependentUpon>InformationForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="eInvoice.cs" />
+    <Compile Include="InvoiceXML.cs" />
     <Compile Include="IniFile.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
@@ -71,8 +75,13 @@
     <Compile Include="MainForm.Designer.cs">
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="InvoiceData.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Reimbursment.cs" />
+    <Compile Include="Summary.cs" />
+    <Compile Include="Supplier.cs" />
+    <Compile Include="Tax.cs" />
     <Compile Include="XmlSerializerExtensions.cs" />
     <EmbeddedResource Include="AboutBox.resx">
       <DependentUpon>AboutBox.cs</DependentUpon>
@@ -109,7 +118,16 @@
   <ItemGroup>
     <Content Include="eInvoiceFreelance.ico" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\iTextSharpCore\itextsharp.csproj">
+      <Project>{84C4FDD9-3ED7-453B-B9DA-B3ED52CB071C}</Project>
+      <Name>itextsharp</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>if $(ConfigurationName) == Release ("C:\Program Files (x86)\Inno Setup 5\ISCC.exe" $(SolutionDir)setup\Windows\eInvoiceFreelance.iss)</PostBuildEvent>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
