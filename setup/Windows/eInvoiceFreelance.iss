@@ -5,6 +5,7 @@
 [Files]
 ; Applicazione
 Source: "..\..\eInvoiceFreelance\bin\Release\{#ApplicationFile}"; DestDir: {app}; Flags: ignoreversion replacesameversion replacesameversion restartreplace; Permissions: everyone-full
+Source: "..\..\eInvoiceFreelance\bin\Release\itextsharp.dll"; DestDir: {app}; Flags: ignoreversion replacesameversion replacesameversion restartreplace; Permissions: everyone-full
 Source: "..\..\eInvoiceFreelance\bin\Release\Template.xml"; DestDir: {app}; Flags: ignoreversion recursesubdirs createallsubdirs onlyifdoesntexist; Permissions: everyone-full
 
 [Dirs]
