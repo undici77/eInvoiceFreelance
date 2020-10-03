@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Drawing;
+using System.Globalization;
 using System.IO;
 using System.Windows.Forms;
 
@@ -14,7 +15,8 @@ namespace eInvoiceFreelance
 			UNIT_PRICE_ID,
 			TOTAL_PRICE_ID,
 			REIMBOURSE_ID,
-			VAT_ID
+			VAT_ID,
+			VAT_ENABLE_ID
 		};
 
 		private enum SUMMARY_GRID_VIEW_COLUMN_ID
@@ -37,6 +39,7 @@ namespace eInvoiceFreelance
 		struct Init
 		{
 			public Reimbursment  reimbursment;
+			public RevenueStamp  revenue_stamp;
 			public ActivityField init_activity;
 			public BankAccount   bank_account;
 			public Tax           tax;
@@ -69,17 +72,18 @@ namespace eInvoiceFreelance
 			_Ini_File.Load(App.Name + ".ini");
 
 			_Init.reimbursment  = null;
-			_Init.init_activity = null; 
+			_Init.init_activity = null;
 			_Init.bank_account  = null;
 			_Init.tax           = null;
-							  
+			_Init.revenue_stamp = null;
+
 			if (!InitData(_Ini_File, ref _Init))
 			{
 				Application.Exit();
 				return;
 			}
 
-			_Invoice = new Invoice(_Init.template_file_name, _Init.reimbursment, _Init.init_activity, _Init.bank_account, _Init.tax);
+			_Invoice = new Invoice(_Init.template_file_name, _Init.reimbursment, _Init.init_activity, _Init.revenue_stamp, _Init.bank_account, _Init.tax);
 
 			InvoiceGridView.Columns[(int)INVOICE_GRID_VIEW_COLUMN_ID.DESCRIPTION_ID].ValueType = typeof(string);
 			InvoiceGridView.Columns[(int)INVOICE_GRID_VIEW_COLUMN_ID.QUANTITY_ID].ValueType = typeof(string);
@@ -91,6 +95,11 @@ namespace eInvoiceFreelance
 				InvoiceGridView.Columns[(int)INVOICE_GRID_VIEW_COLUMN_ID.REIMBOURSE_ID].ReadOnly = true;
 			}
 			InvoiceGridView.Columns[(int)INVOICE_GRID_VIEW_COLUMN_ID.VAT_ID].ValueType = typeof(decimal);
+			InvoiceGridView.Columns[(int)INVOICE_GRID_VIEW_COLUMN_ID.VAT_ENABLE_ID].ValueType = typeof(bool);
+			if (App.IsUnix)
+			{
+				InvoiceGridView.Columns[(int)INVOICE_GRID_VIEW_COLUMN_ID.VAT_ENABLE_ID].ReadOnly = true;
+			}
 
 			SummaryValue.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
 
@@ -113,6 +122,10 @@ namespace eInvoiceFreelance
 
 				System.Diagnostics.Process.Start("http://einvoicefreelance.altervista.org");
 			}
+
+			RevenueStampTextBox.Currency = _Init.revenue_stamp.Price.ToString();
+			RevenueStampCheckBox.Checked = _Init.revenue_stamp.Enable;
+			RevenueStampTextBox.ReadOnly = !RevenueStampCheckBox.Checked;
 
 			_Ini_File.Save(App.Name + ".ini");
 
@@ -137,6 +150,8 @@ namespace eInvoiceFreelance
 			string  bic;
 			decimal reimbursment_percent;
 			string  reimbursment_description;
+			bool    revenue_stamp_enable;
+			decimal revenue_stamp_price;
 
 			OpenFileDialog open_file_dialog;
 
@@ -215,14 +230,14 @@ namespace eInvoiceFreelance
 				}
 				else
 				{
-					return(false);
+					return (false);
 				}
 			}
 
 			ini_file.SetKeyValue("Conf", "Template", init.template_file_name);
 
 			beneficiary         = ini_file.GetKeyValue("BankAccount", "Beneficiary");
-			financial_institute = ini_file.GetKeyValue("BankAccount", "FinancialInstitute"); 
+			financial_institute = ini_file.GetKeyValue("BankAccount", "FinancialInstitute");
 			iban                = ini_file.GetKeyValue("BankAccount", "IBAN");
 			abi                 = ini_file.GetKeyValue("BankAccount", "ABI");
 			cab                 = ini_file.GetKeyValue("BankAccount", "CAB");
@@ -245,15 +260,35 @@ namespace eInvoiceFreelance
 			}
 			ini_file.SetKeyValue("Reimbursment", "Description", reimbursment_description);
 
-			init.init_activity = new ActivityField(description, quantity, unit_price, total_price, true);
-			init.default_value = new object[] { description, quantity.ToString(), unit_price.ToString(), total_price.ToString(), true, vat_percent };
+			try
+			{
+				revenue_stamp_enable = (ini_file.GetKeyValue("RevenueStamp", "Enable") != "0");
+			}
+			catch
+			{
+				revenue_stamp_enable = false;
+				ini_file.SetKeyValue("Reimbursment", "Enable", (revenue_stamp_enable ? "1" : "0"));
+			}
+			try
+			{
+				revenue_stamp_price = decimal.Parse(ini_file.GetKeyValue("RevenueStamp", "Price"));
+			}
+			catch
+			{
+				revenue_stamp_price = 2;
+				ini_file.SetKeyValue("RevenueStamp", "Price", revenue_stamp_price.ToString());
+			}
+
+			init.init_activity = new ActivityField(description, quantity, unit_price, total_price, true, true);
+			init.default_value = new object[] { description, quantity.ToString(), unit_price.ToString(), total_price.ToString(), true, vat_percent, true };
 			init.tax           = new Tax(vat_percent, withholding_tax_percent);
 			init.bank_account  = new BankAccount(beneficiary, financial_institute, iban, abi, cab, bic);
 			init.reimbursment  = new Reimbursment(reimbursment_percent, reimbursment_description);
+			init.revenue_stamp = new RevenueStamp(revenue_stamp_enable, revenue_stamp_price);
 
 			init.save_directory = ini_file.GetKeyValue("Conf", "SaveDirectory");
 
-			return(true);
+			return (true);
 		}
 
 		private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
@@ -276,42 +311,48 @@ namespace eInvoiceFreelance
 			decimal unit_price;
 			decimal total_price;
 			bool    reimbursement;
+			bool    vat_enable;
 
 			if (_Init_Invoice_Data_Grid_View)
+			{
 				return;
+			}
 
 			description   = (string)row[(int)INVOICE_GRID_VIEW_COLUMN_ID.DESCRIPTION_ID];
 			quantity      = decimal.Parse((string)row[(int)INVOICE_GRID_VIEW_COLUMN_ID.QUANTITY_ID]);
 			unit_price    = decimal.Parse(((string)row[(int)INVOICE_GRID_VIEW_COLUMN_ID.UNIT_PRICE_ID]).Replace("€ ", ""));
 			total_price   = decimal.Parse(((string)row[(int)INVOICE_GRID_VIEW_COLUMN_ID.TOTAL_PRICE_ID]).Replace("€ ", ""));
 			reimbursement = (bool)row[(int)INVOICE_GRID_VIEW_COLUMN_ID.REIMBOURSE_ID];
+			vat_enable    = (bool)row[(int)INVOICE_GRID_VIEW_COLUMN_ID.VAT_ENABLE_ID];
 
-			field = new ActivityField(description, quantity, unit_price, total_price, reimbursement);
+			field = new ActivityField(description, quantity, unit_price, total_price, reimbursement, vat_enable);
 
 			_Invoice.ActivityList.Add(field);
 			InvoiceGridView.Rows.Add(row);
 		}
 
-		private void InvoiceDataGridViewRowAdd(string description, decimal quantity, decimal unit_price, decimal total_price, bool reimbursement)
+		private void InvoiceDataGridViewRowAdd(string description, decimal quantity, decimal unit_price, decimal total_price, bool reimbursement, bool vat_enable)
 		{
 			ActivityField field;
 			object[]      row;
 
 			if (_Init_Invoice_Data_Grid_View)
+			{
 				return;
+			}
 
 			row = new object[] { description, quantity.ToString(), unit_price.ToString(), total_price.ToString(), reimbursement, _Invoice.Tax.VatPercent };
-			field = new ActivityField(description, quantity, unit_price, total_price, reimbursement);
+			field = new ActivityField(description, quantity, unit_price, total_price, reimbursement, vat_enable);
 
 			_Invoice.ActivityList.Add(field);
 			InvoiceGridView.Rows.Add(row);
 		}
 
-		private void InvoiceDataGridViewRowInit(string description, decimal quantity, decimal unit_price, decimal total_price, bool reimbursement)
+		private void InvoiceDataGridViewRowInit(string description, decimal quantity, decimal unit_price, decimal total_price, bool reimbursement, bool vat_enable)
 		{
 			object[] row;
 
-			row = new object[] { description, quantity.ToString(), unit_price.ToString(), total_price.ToString(), reimbursement, _Invoice.Tax.VatPercent };
+			row = new object[] { description, quantity.ToString(), unit_price.ToString(), total_price.ToString(), reimbursement, _Invoice.Tax.VatPercent, vat_enable };
 
 			InvoiceGridView.Rows.Add(row);
 		}
@@ -509,6 +550,9 @@ namespace eInvoiceFreelance
 					}
 					break;
 
+				case INVOICE_GRID_VIEW_COLUMN_ID.VAT_ENABLE_ID:
+					break;
+
 				default:
 					Errors.Assert(false);
 					break;
@@ -554,7 +598,9 @@ namespace eInvoiceFreelance
 		private void InvoiceGridView_RowsRemoved(object sender, DataGridViewRowsRemovedEventArgs e)
 		{
 			if (_Init_Invoice_Data_Grid_View)
+			{
 				return;
+			}
 
 			try
 			{
@@ -581,14 +627,19 @@ namespace eInvoiceFreelance
 
 		private void InvoiceGridView_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
 		{
+			DataGridViewCheckBoxCell check_box;
 			try
 			{
 				if (App.IsWindows)
 				{
-					if (e.ColumnIndex != (int)INVOICE_GRID_VIEW_COLUMN_ID.REIMBOURSE_ID)
+					InvoiceGridView.Update();
+					InvoiceGridView.BeginEdit(true);
+					if ((e.ColumnIndex == (int)INVOICE_GRID_VIEW_COLUMN_ID.REIMBOURSE_ID) ||
+					    (e.ColumnIndex == (int)INVOICE_GRID_VIEW_COLUMN_ID.VAT_ENABLE_ID))
 					{
-						InvoiceGridView.Update();
-						InvoiceGridView.BeginEdit(true);
+						check_box = (DataGridViewCheckBoxCell)InvoiceGridView.Rows[e.RowIndex].Cells[e.ColumnIndex];
+						check_box.Value = !((bool)check_box.Value);
+						InvoiceGridView.EndEdit();
 					}
 				}
 				else if (App.IsUnix)
@@ -602,14 +653,20 @@ namespace eInvoiceFreelance
 
 		private void InvoiceGridView_CellMouseClick(object sender, DataGridViewCellMouseEventArgs e)
 		{
+			DataGridViewCheckBoxCell check_box;
+
 			try
 			{
 				if (App.IsWindows)
 				{
-					if (e.ColumnIndex == (int)INVOICE_GRID_VIEW_COLUMN_ID.REIMBOURSE_ID)
+					if ((e.ColumnIndex == (int)INVOICE_GRID_VIEW_COLUMN_ID.REIMBOURSE_ID) ||
+					    (e.ColumnIndex == (int)INVOICE_GRID_VIEW_COLUMN_ID.VAT_ENABLE_ID))
 					{
 						InvoiceGridView.Update();
 						InvoiceGridView.BeginEdit(true);
+						check_box = (DataGridViewCheckBoxCell)InvoiceGridView.Rows[e.RowIndex].Cells[e.ColumnIndex];
+						check_box.Value = !((bool)check_box.Value);
+						InvoiceGridView.EndEdit();
 					}
 				}
 				else if (App.IsUnix)
@@ -630,7 +687,8 @@ namespace eInvoiceFreelance
 			}
 			else if (App.IsUnix)
 			{
-				if (e.ColumnIndex == (int)INVOICE_GRID_VIEW_COLUMN_ID.REIMBOURSE_ID)
+				if ((e.ColumnIndex == (int)INVOICE_GRID_VIEW_COLUMN_ID.REIMBOURSE_ID) ||
+				    (e.ColumnIndex == (int)INVOICE_GRID_VIEW_COLUMN_ID.VAT_ENABLE_ID))
 				{
 					check_box = (DataGridViewCheckBoxCell)InvoiceGridView.Rows[e.RowIndex].Cells[e.ColumnIndex];
 					check_box.Value = !((bool)check_box.Value);
@@ -639,6 +697,40 @@ namespace eInvoiceFreelance
 				}
 			}
 		}
+
+        private void RevenueStampCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+			RevenueStamp revenue_stamp;
+
+			RevenueStampTextBox.ReadOnly = !RevenueStampCheckBox.Checked;
+
+			_Ini_File.SetKeyValue("RevenueStamp", "Enable", RevenueStampCheckBox.Checked ? "1" : "0");
+			_Ini_File.Save(App.Name + ".ini");
+
+			revenue_stamp = new RevenueStamp(RevenueStampCheckBox.Checked, RevenueStampTextBox.Decimal);
+			_Invoice.RevenueStamp = revenue_stamp;
+
+			_Invoice.ActivityListUpdate();
+
+			UpdateSummaryDataGridView();
+			UpdateGenerateButtons();
+        }
+
+        private void RevenueStampTextBox_TextChanged(object sender, EventArgs e)
+        {
+			RevenueStamp revenue_stamp;
+
+			_Ini_File.SetKeyValue("RevenueStamp", "Value", RevenueStampTextBox.Decimal.ToString());
+			_Ini_File.Save(App.Name + ".ini");
+
+			revenue_stamp = new RevenueStamp(RevenueStampCheckBox.Checked, RevenueStampTextBox.Decimal);
+			_Invoice.RevenueStamp = revenue_stamp;
+
+			_Invoice.ActivityListUpdate();
+
+			UpdateSummaryDataGridView();
+			UpdateGenerateButtons();
+        }
 
 		private void InvoiceGridView_CurrentCellDirtyStateChanged(object sender, EventArgs e)
 		{
@@ -655,6 +747,7 @@ namespace eInvoiceFreelance
 			decimal unit_price;
 			decimal total_price;
 			bool    reimbursement;
+			bool    vat_enable;
 
 			int row_id;
 			INVOICE_GRID_VIEW_COLUMN_ID col_id;
@@ -716,10 +809,11 @@ namespace eInvoiceFreelance
 
 			try
 			{
-				description = InvoiceGridView.Rows[row_id].Cells[(int)INVOICE_GRID_VIEW_COLUMN_ID.DESCRIPTION_ID].Value.ToString();
+				description   = InvoiceGridView.Rows[row_id].Cells[(int)INVOICE_GRID_VIEW_COLUMN_ID.DESCRIPTION_ID].Value.ToString();
 				reimbursement = bool.Parse(InvoiceGridView.Rows[row_id].Cells[(int)INVOICE_GRID_VIEW_COLUMN_ID.REIMBOURSE_ID].Value.ToString());
+				vat_enable    = bool.Parse(InvoiceGridView.Rows[row_id].Cells[(int)INVOICE_GRID_VIEW_COLUMN_ID.VAT_ENABLE_ID].Value.ToString());
 
-				_Invoice.ActivityList[row_id] = new ActivityField(description, quantity, unit_price, total_price, reimbursement);
+				_Invoice.ActivityList[row_id] = new ActivityField(description, quantity, unit_price, total_price, reimbursement, vat_enable);
 
 				UpdateSummaryDataGridView();
 			}
@@ -928,7 +1022,7 @@ namespace eInvoiceFreelance
 
 			try
 			{
-				_Invoice = new Invoice(file_name, _Init.reimbursment, _Init.init_activity);
+				_Invoice = new Invoice(file_name, _Init.reimbursment, _Init.init_activity, _Init.revenue_stamp);
 			}
 			catch
 			{
@@ -944,7 +1038,7 @@ namespace eInvoiceFreelance
 			{
 				foreach (ActivityField f in _Invoice.ActivityList.ToArray())
 				{
-					InvoiceDataGridViewRowInit(f.Description, f.Quantity, f.UnitPrice, f.TotalPrice, f.Reimbursement);
+					InvoiceDataGridViewRowInit(f.Description, f.Quantity, f.UnitPrice, f.TotalPrice, f.Reimbursement, f.VatEnable);
 				}
 			}
 			catch
@@ -954,6 +1048,9 @@ namespace eInvoiceFreelance
 			}
 
 			_Init_Invoice_Data_Grid_View = false;
+
+			RevenueStampCheckBox.Checked = _Invoice.RevenueStamp.Enable;
+			RevenueStampTextBox.Currency = _Invoice.RevenueStamp.Price.ToString();
 		}
 
 		private void AddStripMenuItem_Click(object sender, EventArgs e)
@@ -1123,12 +1220,12 @@ namespace eInvoiceFreelance
 			string currency = "EUR";
 
 			url += "https://www.paypal.com/cgi-bin/webscr" +
-				   "?cmd=" + "_donations" +
-				   "&business=" + business +
-				   "&lc=" + country +
-				   "&item_name=" + description +
-				   "&currency_code=" + currency +
-				   "&bn=" + "PP%2dDonationsBF";
+			       "?cmd=" + "_donations" +
+			       "&business=" + business +
+			       "&lc=" + country +
+			       "&item_name=" + description +
+			       "&currency_code=" + currency +
+			       "&bn=" + "PP%2dDonationsBF";
 
 			System.Diagnostics.Process.Start(url);
 		}
@@ -1141,6 +1238,6 @@ namespace eInvoiceFreelance
 
 			about.ShowDialog(this);
 		}
-	}
+    }
 }
 

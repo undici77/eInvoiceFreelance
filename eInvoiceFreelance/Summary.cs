@@ -27,7 +27,7 @@ namespace eInvoiceFreelance
 			_To_Pay                = 0;
 		}
 
-		public Summary(ActivityField[] activities, Reimbursment reimbursment, Tax tax)
+		public Summary(ActivityField[] activities, Reimbursment reimbursment, Tax tax, RevenueStamp revenue_stamp)
 		{
 			decimal reimbursment_value;
 			decimal vat;
@@ -52,7 +52,11 @@ namespace eInvoiceFreelance
 
 				_Reimbursment += reimbursment_value;
 
-				vat = (((field.TotalPrice + reimbursment_value) * tax.VatPercent) / 100);
+				vat = 0;
+				if (field.VatEnable)
+				{
+					vat = (((field.TotalPrice + reimbursment_value) * tax.VatPercent) / 100);
+				}
 
 				_Total_Vat += vat;
 			}
@@ -61,6 +65,11 @@ namespace eInvoiceFreelance
 			_Total                 = _Total_Taxable + _Total_Vat;
 			_Total_Withholding_Tax = ((_Total_Taxable * tax.WithholdingTaxPercent) / 100);
 			_To_Pay                = _Total - _Total_Withholding_Tax;
+
+			if (revenue_stamp.Enable)
+			{
+				_To_Pay += revenue_stamp.Price; 
+			}
 		}
 
 		public decimal Taxable

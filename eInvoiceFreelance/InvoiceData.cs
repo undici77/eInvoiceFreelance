@@ -18,17 +18,19 @@ namespace eInvoiceFreelance
 		private ActivityField          _Init_Activity;
 		private Reimbursment           _Reimbursment;
 		private Summary                _Summary;
+		private RevenueStamp           _Revenue_Stamp;
 
-		public Invoice(FatturaElettronicaType invoice, Reimbursment reimbursment, ActivityField init_activity, BankAccount bank_account = null, Tax tax = null)
+		public Invoice(FatturaElettronicaType invoice, Reimbursment reimbursment, ActivityField init_activity, RevenueStamp revenue_stamp, BankAccount bank_account = null, Tax tax = null)
 		{
 			_Invoice       = invoice;
 			_Reimbursment  = reimbursment;
 			_Init_Activity = init_activity;
+			_Revenue_Stamp = revenue_stamp;
 
 			Initialize(init_activity, bank_account, tax);
 		}
 
-		public Invoice(string file_name, Reimbursment reimbursment, ActivityField init_activity, BankAccount bank_account = null, Tax tax = null)
+		public Invoice(string file_name, Reimbursment reimbursment, ActivityField init_activity, RevenueStamp revenue_stamp, BankAccount bank_account = null, Tax tax = null)
 		{
 			FatturaElettronicaType invoice;
 			XmlSerializer serializer;
@@ -40,9 +42,10 @@ namespace eInvoiceFreelance
 			invoice = (FatturaElettronicaType)serializer.Deserialize(reader);
 			reader.Close();
 
-			_Invoice        = invoice;
-			_Reimbursment   = reimbursment;
-			_Init_Activity  = init_activity;
+			_Invoice       = invoice;
+			_Reimbursment  = reimbursment;
+			_Init_Activity = init_activity;
+			_Revenue_Stamp = revenue_stamp;
 
 			Initialize(init_activity, bank_account, tax);
 		}
@@ -111,6 +114,16 @@ namespace eInvoiceFreelance
 				_Tax = new Tax();
 			}
 
+			try
+			{
+				_Revenue_Stamp = new RevenueStamp(_Invoice);
+			}
+			catch
+			{
+				_Revenue_Stamp = new RevenueStamp();
+			}
+
+
 			if (_Activity_List != null)
 			{
 				_Activity_List.OnChanged -= OnActivityListUpdate;
@@ -118,11 +131,18 @@ namespace eInvoiceFreelance
 
 			_Activity_List = new ActivityList(init_activity);
 
-			_Activity_List.FromInvoice(_Invoice, _Reimbursment);
+			_Activity_List.FromInvoice(_Invoice, _Reimbursment, _Revenue_Stamp);
+
+			if (_Revenue_Stamp.Enable)
+			{
+				_Invoice.FatturaElettronicaBody[0].DatiGenerali.DatiGeneraliDocumento.DatiBollo = new DatiBolloType();
+				_Invoice.FatturaElettronicaBody[0].DatiGenerali.DatiGeneraliDocumento.DatiBollo.BolloVirtuale = BolloVirtualeType.SI;
+				_Invoice.FatturaElettronicaBody[0].DatiGenerali.DatiGeneraliDocumento.DatiBollo.ImportoBollo = _Revenue_Stamp.Price;
+			}
 
 			try
 			{
-				_Summary = new Summary(_Activity_List.ToArray(), _Reimbursment, _Tax);
+				_Summary = new Summary(_Activity_List.ToArray(), _Reimbursment, _Tax, _Revenue_Stamp);
 			}
 			catch
 			{
@@ -138,24 +158,29 @@ namespace eInvoiceFreelance
 
 		void OnActivityListUpdate(object sender, EventArgs e)
 		{
+			ActivityListUpdate();
+		}
+
+		public void ActivityListUpdate()
+		{
 			try
 			{
-				_Summary = new Summary(_Activity_List.ToArray(), _Reimbursment, _Tax);
+				_Summary = new Summary(_Activity_List.ToArray(), _Reimbursment, _Tax, _Revenue_Stamp);
 			}
 			catch
 			{
 				_Summary = new Summary();
 			}
 
-			_Invoice.FatturaElettronicaBody[0].DatiBeniServizi.DettaglioLinee = _Activity_List.ToInvoice(_Reimbursment, Tax);
+			_Invoice.FatturaElettronicaBody[0].DatiBeniServizi.DettaglioLinee = _Activity_List.ToInvoice(_Reimbursment, Tax, _Revenue_Stamp);
 
-			_Invoice.FatturaElettronicaBody[0].DatiBeniServizi.DatiRiepilogo[0].ImponibileImporto              = _Summary.TotalTaxable;
-			_Invoice.FatturaElettronicaBody[0].DatiBeniServizi.DatiRiepilogo[0].Imposta                        = _Summary.TotalVat;
+			_Invoice.FatturaElettronicaBody[0].DatiBeniServizi.DatiRiepilogo[0].ImponibileImporto = _Summary.TotalTaxable;
+			_Invoice.FatturaElettronicaBody[0].DatiBeniServizi.DatiRiepilogo[0].Imposta = _Summary.TotalVat;
 			_Invoice.FatturaElettronicaBody[0].DatiGenerali.DatiGeneraliDocumento.DatiRitenuta.ImportoRitenuta = _Summary.TotalWithholdingTax;
-			_Invoice.FatturaElettronicaBody[0].DatiGenerali.DatiGeneraliDocumento.ImportoTotaleDocumento       = _Summary.Total;
-			_Invoice.FatturaElettronicaBody[0].DatiPagamento[0].DettaglioPagamento[0].ImportoPagamento         = _Summary.ToPay;
+			_Invoice.FatturaElettronicaBody[0].DatiGenerali.DatiGeneraliDocumento.ImportoTotaleDocumento = _Summary.Total;
+			_Invoice.FatturaElettronicaBody[0].DatiPagamento[0].DettaglioPagamento[0].ImportoPagamento = _Summary.ToPay;
 		}
-		public void GenerateXML(string file_name, decimal  number, DateTime date_time)
+		public void GenerateXML(string file_name, decimal number, DateTime date_time)
 		{
 			XmlSerializer invoice_serializer;
 			XmlSerializerNamespaces name_space;
@@ -410,6 +435,28 @@ namespace eInvoiceFreelance
 			get
 			{
 				return (_Tax);
+			}
+		}
+
+		public RevenueStamp RevenueStamp
+		{
+			get
+			{
+				return (_Revenue_Stamp);
+			}
+			set
+			{
+				_Revenue_Stamp = value;
+				if (_Revenue_Stamp.Enable)
+				{
+					_Invoice.FatturaElettronicaBody[0].DatiGenerali.DatiGeneraliDocumento.DatiBollo = new DatiBolloType();
+					_Invoice.FatturaElettronicaBody[0].DatiGenerali.DatiGeneraliDocumento.DatiBollo.BolloVirtuale = BolloVirtualeType.SI;
+					_Invoice.FatturaElettronicaBody[0].DatiGenerali.DatiGeneraliDocumento.DatiBollo.ImportoBollo = _Revenue_Stamp.Price;
+				}
+				else
+				{
+					_Invoice.FatturaElettronicaBody[0].DatiGenerali.DatiGeneraliDocumento.DatiBollo = null;
+				}
 			}
 		}
 	}

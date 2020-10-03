@@ -13,6 +13,7 @@ namespace eInvoiceFreelance
 		private decimal _Unit_Price;
 		private decimal _Total_Price;
 		private bool    _Reimbursement;
+		private bool    _Vat_Enable;
 
 		public ActivityField()
 		{
@@ -21,6 +22,7 @@ namespace eInvoiceFreelance
 			_Unit_Price    = 0;
 			_Total_Price   = 0;
 			_Reimbursement = false;
+			_Vat_Enable    = false;
 		}
 
         public ActivityField(ActivityField activity_field)
@@ -30,15 +32,18 @@ namespace eInvoiceFreelance
 			_Unit_Price    = activity_field.UnitPrice;
 			_Total_Price   = activity_field.TotalPrice;
 			_Reimbursement = activity_field.Reimbursement;
+			_Vat_Enable    = activity_field.VatEnable;
+
         }
 
-		public ActivityField(string description, decimal quantity, decimal unit_price, decimal total_price, bool reimbursement)
+		public ActivityField(string description, decimal quantity, decimal unit_price, decimal total_price, bool reimbursement, bool vat_enable)
 		{
 			_Description   = description;
 			_Quantity      = quantity;
 			_Unit_Price    = unit_price;
 			_Total_Price   = total_price;
 			_Reimbursement = reimbursement;
+			_Vat_Enable    = vat_enable;
 		}
 
 		public string Description
@@ -74,6 +79,13 @@ namespace eInvoiceFreelance
 			get
 			{
 				return (_Reimbursement);
+			}
+		}
+		public bool VatEnable
+		{
+			get
+			{
+				return (_Vat_Enable);
 			}
 		}
 	}
@@ -211,7 +223,7 @@ namespace eInvoiceFreelance
 			return(_List.ToArray());
 		}
 
-		public void FromInvoice(FatturaElettronicaType invoice, Reimbursment reimbursment)
+		public void FromInvoice(FatturaElettronicaType invoice, Reimbursment reimbursment, RevenueStamp revenue_stamp)
 		{
 			int                  id;
 			int                  lines_number;
@@ -219,6 +231,7 @@ namespace eInvoiceFreelance
 			DettaglioLineeType   line;
 			DettaglioLineeType   field;
 			ActivityField        activity;
+			bool                 vat_enable;
 
 			_List.Clear();
 
@@ -238,25 +251,30 @@ namespace eInvoiceFreelance
 				
 				if (line.Descrizione != null)
 				{
-					if (line.Descrizione.Contains(reimbursment.Pattern) && (field != null))
+					if (!revenue_stamp.Enable || (line.Descrizione != RevenueStamp.Pattern))
 					{
-						activity = new ActivityField(field.Descrizione, field.Quantita, field.PrezzoUnitario, field.PrezzoTotale, true);
-						_List.Add(activity);
+						vat_enable = (line.AliquotaIVA > 0) && (line.NaturaSpecified == false);
 
-						field = null;
-						line = null;
-					}
-					else if (field == null)
-					{
-						field = line;
-						line = null;
-					}
-					else
-					{
-						activity = new ActivityField(field.Descrizione, field.Quantita, field.PrezzoUnitario, field.PrezzoTotale, false);
-						_List.Add(activity);
+						if (line.Descrizione.Contains(reimbursment.Pattern) && (field != null))
+						{
+							activity = new ActivityField(field.Descrizione, field.Quantita, field.PrezzoUnitario, field.PrezzoTotale, true, vat_enable);
+							_List.Add(activity);
 
-						field = null;
+							field = null;
+							line = null;
+						}
+						else if (field == null)
+						{
+							field = line;
+							line = null;
+						}
+						else
+						{
+							activity = new ActivityField(field.Descrizione, field.Quantita, field.PrezzoUnitario, field.PrezzoTotale, false, vat_enable);
+							_List.Add(activity);
+
+							field = null;
+						}
 					}
 				}
 			}
@@ -265,7 +283,7 @@ namespace eInvoiceFreelance
 			{
 				if (field.Descrizione != null)
 				{
-					activity = new ActivityField(field.Descrizione, field.Quantita, field.PrezzoUnitario, field.PrezzoTotale, false);
+					activity = new ActivityField(field.Descrizione, field.Quantita, field.PrezzoUnitario, field.PrezzoTotale, false, true);
 					_List.Add(activity);
 
 					field = null;
@@ -279,7 +297,7 @@ namespace eInvoiceFreelance
 			}
 		}
 
-		public DettaglioLineeType[] ToInvoice(Reimbursment reimbursment, Tax tax)
+		public DettaglioLineeType[] ToInvoice(Reimbursment reimbursment, Tax tax, RevenueStamp revenue_stamp)
 		{
 			DettaglioLineeType bill_filed;
 			List<DettaglioLineeType> invoice_lines;
@@ -298,7 +316,17 @@ namespace eInvoiceFreelance
 				bill_filed.Quantita = field.Quantity;
 				bill_filed.PrezzoUnitario = field.UnitPrice;
 				bill_filed.PrezzoTotale = field.TotalPrice;
-				bill_filed.AliquotaIVA = tax.VatPercent;
+				if (field.VatEnable)
+				{
+					bill_filed.AliquotaIVA = tax.VatPercent;
+					bill_filed.NaturaSpecified = false;
+				}
+				else
+                {
+					bill_filed.AliquotaIVA = 0;
+					bill_filed.Natura = NaturaType.N3;
+					bill_filed.NaturaSpecified = true;
+                }
 
 				invoice_lines.Add(bill_filed);
 				line_number++;
@@ -312,11 +340,38 @@ namespace eInvoiceFreelance
 					bill_filed.Quantita = 1;
 					bill_filed.PrezzoUnitario = (field.TotalPrice * reimbursment.Percent) / 100;
 					bill_filed.PrezzoTotale = (field.TotalPrice * reimbursment.Percent) / 100;
-					bill_filed.AliquotaIVA = tax.VatPercent;
+					if (field.VatEnable)
+					{
+						bill_filed.AliquotaIVA = tax.VatPercent;
+						bill_filed.NaturaSpecified = false;
+					}
+					else
+					{
+						bill_filed.AliquotaIVA = 0;
+						bill_filed.Natura = NaturaType.N3;
+						bill_filed.NaturaSpecified = true;
+					}
 
 					invoice_lines.Add(bill_filed);
 					line_number++;
 				}
+			}
+
+			if (revenue_stamp.Enable)
+			{
+				bill_filed = new DettaglioLineeType();
+				bill_filed.NumeroLinea = line_number.ToString();
+				bill_filed.Descrizione = RevenueStamp.Pattern;
+				bill_filed.QuantitaSpecified = true;
+				bill_filed.Quantita = 1;
+				bill_filed.PrezzoUnitario = revenue_stamp.Price;
+				bill_filed.PrezzoTotale = revenue_stamp.Price;
+				bill_filed.AliquotaIVA = 0;
+				bill_filed.Natura = NaturaType.N1;
+				bill_filed.NaturaSpecified = true;
+
+				invoice_lines.Add(bill_filed);
+				line_number++;
 			}
 
 			return (invoice_lines.ToArray());
