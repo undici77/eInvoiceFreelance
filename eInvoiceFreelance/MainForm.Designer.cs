@@ -57,6 +57,9 @@
             this.DonatePictureBox = new System.Windows.Forms.PictureBox();
             this.MainTableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
             this.InvoiceGridView = new DataGridViewEx();
+            this.RevenueStampTableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
+            this.RevenueStampCheckBox = new System.Windows.Forms.CheckBox();
+            this.RevenueStampTextBox = new eInvoiceFreelance.CurrencyTextBox();
             this.InvoiceDescription = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.InvoiceQuantity = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.InvoiceUnitPrice = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -64,9 +67,6 @@
             this.InvoiceReimbursement = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.InvoiceVat = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.InvoceVatEnable = new System.Windows.Forms.DataGridViewCheckBoxColumn();
-            this.RevenueStampTableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
-            this.RevenueStampCheckBox = new System.Windows.Forms.CheckBox();
-            this.RevenueStampTextBox = new eInvoiceFreelance.CurrencyTextBox();
             this.StripMenu.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.SummariesGridView)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.DonatePictureBox)).BeginInit();
@@ -275,7 +275,7 @@
             this.MainTableLayoutPanel.Name = "MainTableLayoutPanel";
             this.MainTableLayoutPanel.RowCount = 3;
             this.MainTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.MainTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
+            this.MainTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 50F));
             this.MainTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 172F));
             this.MainTableLayoutPanel.Size = new System.Drawing.Size(1060, 447);
             this.MainTableLayoutPanel.TabIndex = 4;
@@ -332,7 +332,7 @@
             this.InvoiceGridView.ShowCellToolTips = false;
             this.InvoiceGridView.ShowEditingIcon = false;
             this.InvoiceGridView.ShowRowErrors = false;
-            this.InvoiceGridView.Size = new System.Drawing.Size(1054, 239);
+            this.InvoiceGridView.Size = new System.Drawing.Size(1054, 219);
             this.InvoiceGridView.TabIndex = 0;
             this.InvoiceGridView.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.InvoiceGridView_CellContentClick);
             this.InvoiceGridView.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.InvoiceGridView_CellDoubleClick);
@@ -345,6 +345,46 @@
             this.InvoiceGridView.RowsAdded += new System.Windows.Forms.DataGridViewRowsAddedEventHandler(this.InvoiceGridView_RowsAdded);
             this.InvoiceGridView.RowsRemoved += new System.Windows.Forms.DataGridViewRowsRemovedEventHandler(this.InvoiceGridView_RowsRemoved);
             this.InvoiceGridView.Leave += new System.EventHandler(this.InvoiceGridView_Leave);
+            // 
+            // RevenueStampTableLayoutPanel
+            // 
+            this.RevenueStampTableLayoutPanel.ColumnCount = 2;
+            this.RevenueStampTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.RevenueStampTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.RevenueStampTableLayoutPanel.Controls.Add(this.RevenueStampCheckBox, 0, 0);
+            this.RevenueStampTableLayoutPanel.Controls.Add(this.RevenueStampTextBox, 1, 0);
+            this.RevenueStampTableLayoutPanel.Location = new System.Drawing.Point(3, 228);
+            this.RevenueStampTableLayoutPanel.Name = "RevenueStampTableLayoutPanel";
+            this.RevenueStampTableLayoutPanel.RowCount = 1;
+            this.RevenueStampTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.RevenueStampTableLayoutPanel.Size = new System.Drawing.Size(230, 44);
+            this.RevenueStampTableLayoutPanel.TabIndex = 4;
+            // 
+            // RevenueStampCheckBox
+            // 
+            this.RevenueStampCheckBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.RevenueStampCheckBox.AutoSize = true;
+            this.RevenueStampCheckBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.RevenueStampCheckBox.Location = new System.Drawing.Point(3, 3);
+            this.RevenueStampCheckBox.Name = "RevenueStampCheckBox";
+            this.RevenueStampCheckBox.Size = new System.Drawing.Size(61, 38);
+            this.RevenueStampCheckBox.TabIndex = 0;
+            this.RevenueStampCheckBox.Text = "Bollo";
+            this.RevenueStampCheckBox.UseVisualStyleBackColor = true;
+            this.RevenueStampCheckBox.CheckedChanged += new System.EventHandler(this.RevenueStampCheckBox_CheckedChanged);
+            // 
+            // RevenueStampTextBox
+            // 
+            this.RevenueStampTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.RevenueStampTextBox.Currency = "";
+            this.RevenueStampTextBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.RevenueStampTextBox.Location = new System.Drawing.Point(70, 10);
+            this.RevenueStampTextBox.Name = "RevenueStampTextBox";
+            this.RevenueStampTextBox.Size = new System.Drawing.Size(157, 24);
+            this.RevenueStampTextBox.TabIndex = 1;
+            this.RevenueStampTextBox.TextChanged += new System.EventHandler(this.RevenueStampTextBox_TextChanged);
             // 
             // InvoiceDescription
             // 
@@ -401,7 +441,7 @@
             dataGridViewCellStyle9.Format = "0.00 \\%";
             this.InvoiceVat.DefaultCellStyle = dataGridViewCellStyle9;
             this.InvoiceVat.FillWeight = 10F;
-            this.InvoiceVat.HeaderText = "IVA";
+            this.InvoiceVat.HeaderText = "IVA %";
             this.InvoiceVat.MinimumWidth = 60;
             this.InvoiceVat.Name = "InvoiceVat";
             this.InvoiceVat.ReadOnly = true;
@@ -410,49 +450,9 @@
             // 
             this.InvoceVatEnable.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
             this.InvoceVatEnable.FillWeight = 15F;
-            this.InvoceVatEnable.HeaderText = "Esente IVA";
+            this.InvoceVatEnable.HeaderText = "Soggetto ad IVA";
             this.InvoceVatEnable.MinimumWidth = 60;
             this.InvoceVatEnable.Name = "InvoceVatEnable";
-            // 
-            // RevenueStampTableLayoutPanel
-            // 
-            this.RevenueStampTableLayoutPanel.ColumnCount = 2;
-            this.RevenueStampTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.RevenueStampTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.RevenueStampTableLayoutPanel.Controls.Add(this.RevenueStampCheckBox, 0, 0);
-            this.RevenueStampTableLayoutPanel.Controls.Add(this.RevenueStampTextBox, 1, 0);
-            this.RevenueStampTableLayoutPanel.Location = new System.Drawing.Point(3, 248);
-            this.RevenueStampTableLayoutPanel.Name = "RevenueStampTableLayoutPanel";
-            this.RevenueStampTableLayoutPanel.RowCount = 1;
-            this.RevenueStampTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.RevenueStampTableLayoutPanel.Size = new System.Drawing.Size(201, 24);
-            this.RevenueStampTableLayoutPanel.TabIndex = 4;
-            // 
-            // RevenueStampCheckBox
-            // 
-            this.RevenueStampCheckBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.RevenueStampCheckBox.AutoSize = true;
-            this.RevenueStampCheckBox.Location = new System.Drawing.Point(3, 3);
-            this.RevenueStampCheckBox.Name = "RevenueStampCheckBox";
-            this.RevenueStampCheckBox.Size = new System.Drawing.Size(49, 18);
-            this.RevenueStampCheckBox.TabIndex = 0;
-            this.RevenueStampCheckBox.Text = "Bollo";
-            this.RevenueStampCheckBox.UseVisualStyleBackColor = true;
-            this.RevenueStampCheckBox.CheckedChanged += new System.EventHandler(this.RevenueStampCheckBox_CheckedChanged);
-            // 
-            // RevenueStampTextBox
-            // 
-            this.RevenueStampTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.RevenueStampTextBox.Currency = "";
-            this.RevenueStampTextBox.Location = new System.Drawing.Point(58, 3);
-            this.RevenueStampTextBox.Name = "RevenueStampTextBox";
-            this.RevenueStampTextBox.Size = new System.Drawing.Size(140, 20);
-            this.RevenueStampTextBox.TabIndex = 1;
-            this.RevenueStampTextBox.TextChanged += new System.EventHandler(this.RevenueStampTextBox_TextChanged);
             // 
             // MainForm
             // 
@@ -501,6 +501,9 @@
 		private System.Windows.Forms.ToolStripMenuItem PdfToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem PdfInvoiceToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem PdfProformaToolStripMenuItem;
+        private System.Windows.Forms.TableLayoutPanel RevenueStampTableLayoutPanel;
+        private System.Windows.Forms.CheckBox RevenueStampCheckBox;
+        private CurrencyTextBox RevenueStampTextBox;
         private System.Windows.Forms.DataGridViewTextBoxColumn InvoiceDescription;
         private System.Windows.Forms.DataGridViewTextBoxColumn InvoiceQuantity;
         private System.Windows.Forms.DataGridViewTextBoxColumn InvoiceUnitPrice;
@@ -508,9 +511,6 @@
         private System.Windows.Forms.DataGridViewCheckBoxColumn InvoiceReimbursement;
         private System.Windows.Forms.DataGridViewTextBoxColumn InvoiceVat;
         private System.Windows.Forms.DataGridViewCheckBoxColumn InvoceVatEnable;
-        private System.Windows.Forms.TableLayoutPanel RevenueStampTableLayoutPanel;
-        private System.Windows.Forms.CheckBox RevenueStampCheckBox;
-        private CurrencyTextBox RevenueStampTextBox;
     }
 }
 
